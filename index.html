@@ -4,7 +4,7 @@
     <!-- HEAD_BLOCK_2 --><style>
     body {
         color: #333;
-        background: #ccc;
+        background: #222;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -14,10 +14,27 @@
         transition: background-color 0.5s ease;
     }
     canvas {
-        border: 1px solid #000;
+        border: 2px solid #00ff00;
         display: block;
-        box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
-        transition: box-shadow 0.5s ease;
+        box-shadow: 0 0 30px rgba(0, 255, 0, 0.7);
+        transition: box-shadow 0.5s ease, transform 0.5s ease;
+        width: 90vw;
+        height: 90vw;
+        max-width: 400px;
+        max-height: 400px;
+    }
+    @media (max-width: 600px) {
+        canvas {
+            width: 80vw;
+            height: 80vw;
+        }
+    }
+    header, footer {
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+        background: #444;
+        color: #fff;
     }
 </style><!-- /HEAD_BLOCK_2 -->
     <!-- HEAD_BLOCK_3 --><script>
@@ -62,10 +79,16 @@
             addGlowEffect();
             createParticleExplosion(apple.x, apple.y);
         }
+
+        // Enhanced Effect: Increase speed as score increases
+        if (score % 5 === 0 && score !== 0) {
+            clearInterval(gameInterval);
+            gameInterval = setInterval(game, 1000/(15 + score));
+        }
     }
 
     function draw() {
-        ctx.fillStyle = '#ccc';
+        ctx.fillStyle = '#222';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         ctx.fillStyle = '#ff0000';
@@ -76,7 +99,7 @@
             ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
         }
 
-        ctx.fillStyle = '#000';
+        ctx.fillStyle = '#fff';
         ctx.font = '20px Arial';
         ctx.fillText('Score: ' + score, 10, 20);
 
@@ -86,16 +109,16 @@
     function keyPush(event) {
         switch (event.keyCode) {
             case 37:
-                direction = {x: -1, y: 0};
+                if(direction.x === 0) direction = {x: -1, y: 0};
                 break;
             case 38:
-                direction = {x: 0, y: -1};
+                if(direction.y === 0) direction = {x: 0, y: -1};
                 break;
             case 39:
-                direction = {x: 1, y: 0};
+                if(direction.x === 0) direction = {x: 1, y: 0};
                 break;
             case 40:
-                direction = {x: 0, y: 1};
+                if(direction.y === 0) direction = {x: 0, y: 1};
                 break;
         }
     }
@@ -111,9 +134,11 @@
 
     // Added Glow Effect
     function addGlowEffect() {
-        canvas.style.boxShadow = '0 0 20px rgba(0, 255, 0, 0.5)';
+        canvas.style.boxShadow = '0 0 30px rgba(0, 255, 0, 0.7)';
+        canvas.style.transform = 'scale(1.05)';
         setTimeout(() => {
-            canvas.style.boxShadow = '0 0 5px rgba(0, 0, 0, 0.5)';
+            canvas.style.boxShadow = '0 0 30px rgba(0, 255, 0, 0.5)';
+            canvas.style.transform = 'scale(1)';
         }, 500);
     }
 
@@ -121,13 +146,13 @@
     let particles = [];
 
     function createParticleExplosion(x, y) {
-        const numberOfParticles = 20;
+        const numberOfParticles = 30;
         for (let i = 0; i < numberOfParticles; i++) {
             particles.push({
                 x: x * gridSize + gridSize / 2,
                 y: y * gridSize + gridSize / 2,
-                velocityX: (Math.random() - 0.5) * 4,
-                velocityY: (Math.random() - 0.5) * 4,
+                velocityX: (Math.random() - 0.5) * 6,
+                velocityY: (Math.random() - 0.5) * 6,
                 alpha: 1
             });
         }
@@ -137,21 +162,25 @@
         particles.forEach((p, index) => {
             ctx.fillStyle = `rgba(255, 165, 0, ${p.alpha})`;
             ctx.beginPath();
-            ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+            ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
             ctx.fill();
             p.x += p.velocityX;
             p.y += p.velocityY;
-            p.alpha -= 0.02;
+            p.alpha -= 0.03;
             if (p.alpha <= 0) {
                 particles.splice(index, 1);
             }
         });
     }
+
+    let gameInterval = setInterval(game, 1000/15);
 </script><!-- /HEAD_BLOCK_3 -->
+    <!-- HEAD_BLOCK_4 --><meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- /HEAD_BLOCK_4 -->
 </head>
 <body>
     <!-- BODY_BLOCK_1 --><header><h1>Welcome</h1></header><!-- /BODY_BLOCK_1 -->
-    <!-- BODY_BLOCK_2 --><canvas id="game" width="400" height="400"></canvas><!-- /BODY_BLOCK_2 -->
+    <!-- BODY_BLOCK_2 --><canvas id="game" width="400" height="400" style="max-width: 100%; height: auto;"></canvas><!-- /BODY_BLOCK_2 -->
     <!-- BODY_BLOCK_3 --><footer>Footer content</footer><!-- /BODY_BLOCK_3 -->
+    <!-- BODY_BLOCK_4 --><button id="startButton" onclick="startGame()" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 10px 20px; font-size: 16px;">Start Game</button><!-- /BODY_BLOCK_4 -->
 </body>
 </html>
