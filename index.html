@@ -1,7 +1,157 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head><title>Page Title</title></head>
+<html>
+<head>
+    <!-- HEAD_BLOCK_1 --><meta charset="UTF-8"><title>Snake Game</title><!-- /HEAD_BLOCK_1 -->
+    <!-- HEAD_BLOCK_2 --><style>
+    body {
+        color: #333;
+        background: #ccc;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+        transition: background-color 0.5s ease;
+    }
+    canvas {
+        border: 1px solid #000;
+        display: block;
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        transition: box-shadow 0.5s ease;
+    }
+</style><!-- /HEAD_BLOCK_2 -->
+    <!-- HEAD_BLOCK_3 --><script>
+    let canvas, ctx;
+    let snake = [{x: 10, y: 10}];
+    let apple = {x: 5, y: 5};
+    let direction = {x: 1, y: 0};
+    const gridSize = 20;
+    const tileCount = 20;
+    let score = 0;
+
+    window.onload = () => {
+        canvas = document.getElementById('game');
+        ctx = canvas.getContext('2d');
+        document.addEventListener('keydown', keyPush);
+        setInterval(game, 1000/15);
+    };
+
+    function game() {
+        update();
+        draw();
+    }
+
+    function update() {
+        for (let i = snake.length - 1; i > 0; i--) {
+            snake[i] = {...snake[i - 1]};
+        }
+        snake[0].x += direction.x;
+        snake[0].y += direction.y;
+
+        if (snake[0].x < 0) snake[0].x = tileCount - 1;
+        if (snake[0].x >= tileCount) snake[0].x = 0;
+        if (snake[0].y < 0) snake[0].y = tileCount - 1;
+        if (snake[0].y >= tileCount) snake[0].y = 0;
+
+        if (snake[0].x === apple.x && snake[0].y === apple.y) {
+            score++;
+            snake.push({});
+            apple.x = Math.floor(Math.random() * tileCount);
+            apple.y = Math.floor(Math.random() * tileCount);
+            document.body.style.backgroundColor = getRandomColor();
+            addGlowEffect();
+            createParticleExplosion(apple.x, apple.y);
+        }
+    }
+
+    function draw() {
+        ctx.fillStyle = '#ccc';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#ff0000';
+        ctx.fillRect(apple.x * gridSize, apple.y * gridSize, gridSize, gridSize);
+
+        ctx.fillStyle = '#00ff00';
+        for (const segment of snake) {
+            ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+        }
+
+        ctx.fillStyle = '#000';
+        ctx.font = '20px Arial';
+        ctx.fillText('Score: ' + score, 10, 20);
+
+        drawParticles();
+    }
+
+    function keyPush(event) {
+        switch (event.keyCode) {
+            case 37:
+                direction = {x: -1, y: 0};
+                break;
+            case 38:
+                direction = {x: 0, y: -1};
+                break;
+            case 39:
+                direction = {x: 1, y: 0};
+                break;
+            case 40:
+                direction = {x: 0, y: 1};
+                break;
+        }
+    }
+
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    // Added Glow Effect
+    function addGlowEffect() {
+        canvas.style.boxShadow = '0 0 20px rgba(0, 255, 0, 0.5)';
+        setTimeout(() => {
+            canvas.style.boxShadow = '0 0 5px rgba(0, 0, 0, 0.5)';
+        }, 500);
+    }
+
+    // Added Particle Effects
+    let particles = [];
+
+    function createParticleExplosion(x, y) {
+        const numberOfParticles = 20;
+        for (let i = 0; i < numberOfParticles; i++) {
+            particles.push({
+                x: x * gridSize + gridSize / 2,
+                y: y * gridSize + gridSize / 2,
+                velocityX: (Math.random() - 0.5) * 4,
+                velocityY: (Math.random() - 0.5) * 4,
+                alpha: 1
+            });
+        }
+    }
+
+    function drawParticles() {
+        particles.forEach((p, index) => {
+            ctx.fillStyle = `rgba(255, 165, 0, ${p.alpha})`;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+            ctx.fill();
+            p.x += p.velocityX;
+            p.y += p.velocityY;
+            p.alpha -= 0.02;
+            if (p.alpha <= 0) {
+                particles.splice(index, 1);
+            }
+        });
+    }
+</script><!-- /HEAD_BLOCK_3 -->
+</head>
 <body>
-<p>Page Content</p>
+    <!-- BODY_BLOCK_1 --><header><h1>Welcome</h1></header><!-- /BODY_BLOCK_1 -->
+    <!-- BODY_BLOCK_2 --><canvas id="game" width="400" height="400"></canvas><!-- /BODY_BLOCK_2 -->
+    <!-- BODY_BLOCK_3 --><footer>Footer content</footer><!-- /BODY_BLOCK_3 -->
 </body>
 </html>
