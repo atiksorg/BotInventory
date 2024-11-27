@@ -70,16 +70,20 @@
     <div class="character">
         <h2>Character</h2>
         <div class="slot" id="head" ondrop="drop(event)" ondragover="allowDrop(event)">Head</div>
+        <div class="slot" id="helmet" ondrop="drop(event)" ondragover="allowDrop(event)">Helmet</div>
         <div class="slot" id="chest" ondrop="drop(event)" ondragover="allowDrop(event)">Chest</div>
+        <div class="slot" id="armor" ondrop="drop(event)" ondragover="allowDrop(event)">Armor</div>
         <div class="slot" id="legs" ondrop="drop(event)" ondragover="allowDrop(event)">Legs</div>
+        <div class="slot" id="boots" ondrop="drop(event)" ondragover="allowDrop(event)">Boots</div>
     </div><!-- /BODY_BLOCK_2 -->
     <!-- BODY_BLOCK_3 --><div class="inventory">
         <h2>Inventory</h2>
-        <div class="slot draggable" id="item1" draggable="true" ondrag="drag(event)">Item 1</div>
-        <div class="slot draggable" id="item2" draggable="true" ondrag="drag(event)">Item 2</div>
-        <div class="slot draggable" id="item3" draggable="true" ondrag="drag(event)">Item 3</div>
-    </div>
-</div><!-- /BODY_BLOCK_3 -->
+        <div class="slot draggable" id="item1" draggable="true" ondragstart="drag(event)">Sword</div>
+        <div class="slot draggable" id="item2" draggable="true" ondragstart="drag(event)">Shield</div>
+        <div class="slot draggable" id="item3" draggable="true" ondragstart="drag(event)">Item 3</div>
+        <div class="slot draggable" id="item4" draggable="true" ondragstart="drag(event)">Health Potion</div>
+        <div class="slot draggable" id="item5" draggable="true" ondragstart="drag(event)">Mana Potion</div>
+    </div><!-- /BODY_BLOCK_3 -->
     <!-- BODY_BLOCK_4 --><footer><p>© 2024 Game Studio</p></footer><!-- /BODY_BLOCK_4 -->
 </body>
 </html>
