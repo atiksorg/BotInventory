@@ -1,13 +1,106 @@
-
 <html>
-    <head>
-        <!-- HEAD_BLOCK_1 --><meta charset="UTF-8"><title>My Page</title><!-- /HEAD_BLOCK_1 -->
-        <!-- HEAD_BLOCK_2 --><style>body {color:#333;background:#ccc;}</style><!-- /HEAD_BLOCK_2 -->
-        <!-- HEAD_BLOCK_3 --><script>alert('Hello World!')</script><!-- /HEAD_BLOCK_3 -->
-    </head>
-    <body>
-        <!-- BODY_BLOCK_1 --><header><h1>Welcome</h1></header><!-- /BODY_BLOCK_1 -->
-        <!-- BODY_BLOCK_2 --><main><p>Main content here</p></main><!-- /BODY_BLOCK_2 -->
-        <!-- BODY_BLOCK_3 --><footer>Footer content</footer><!-- /BODY_BLOCK_3 -->
-    </body>
+<head>
+    <!-- HEAD_BLOCK_1 --><meta charset="UTF-8"><title>Tic Tac Toe</title><!-- /HEAD_BLOCK_1 -->
+    <!-- HEAD_BLOCK_2 -->
+<style>
+    body {
+        color: #ffffff;
+        background: #121212;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+    header {
+        margin-bottom: 20px;
+    }
+    h1 {
+        color: #ffffff;
+    }
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 80px);
+        grid-gap: 10px;
+    }
+    .cell {
+        width: 80px;
+        height: 80px;
+        background: #333333;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        border: 2px solid #ffffff;
+        border-radius: 5px;
+        transition: background 0.3s, transform 0.2s;
+    }
+    .cell:hover {
+        background: #555555;
+        transform: scale(1.05);
+    }
+    #result {
+        margin-top: 20px;
+        font-size: 20px;
+        color: #ffffff;
+    }
+    footer {
+        margin-top: 30px;
+    }
+    button {
+        background: #444444;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        padding: 10px 20px;
+        margin-top: 20px;
+        font-size: 16px;
+    }
+    button:hover {
+        background: #555555;
+    }
+    @media (max-width: 600px) {
+        .grid {
+            grid-template-columns: repeat(3, 60px);
+            grid-gap: 8px;
+        }
+        .cell {
+            width: 60px;
+            height: 60px;
+            font-size: 20px;
+        }
+        button {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+    }
+</style>
+<!-- /HEAD_BLOCK_2 -->
+    <!-- HEAD_BLOCK_3 --><script>let board = ['', '', '', '', '', '', '', '', '']; let currentPlayer = 'X'; let winner = null; function handleClick(index) { if (board[index] === '' && winner === null) { board[index] = currentPlayer; document.querySelectorAll('.cell')[index].innerText = currentPlayer; checkWinner(); currentPlayer = currentPlayer === 'X' ? 'O' : 'X'; } } function checkWinner() { const winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]; winningCombinations.forEach(combination => { const [a, b, c] = combination; if (board[a] && board[a] === board[b] && board[a] === board[c]) { winner = board[a]; document.getElementById('result').innerText = `Winner: ${winner}`; } }); if (!board.includes('') && winner === null) { document.getElementById('result').innerText = 'Draw!'; } } function resetGame() { board = ['', '', '', '', '', '', '', '', '']; winner = null; document.getElementById('result').innerText = ''; document.querySelectorAll('.cell').forEach(cell => cell.innerText = ''); } </script><!-- /HEAD_BLOCK_3 -->
+    <!-- HEAD_BLOCK_4 --><meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- /HEAD_BLOCK_4 -->
+</head>
+<body>
+    <!-- BODY_BLOCK_1 --><header><h1>Tic Tac Toe</h1></header><!-- /BODY_BLOCK_1 -->
+    <!-- BODY_BLOCK_2 --><main>
+    <div class="grid">
+        <div class="cell" onclick="handleClick(0)"></div>
+        <div class="cell" onclick="handleClick(1)"></div>
+        <div class="cell" onclick="handleClick(2)"></div>
+        <div class="cell" onclick="handleClick(3)"></div>
+        <div class="cell" onclick="handleClick(4)"></div>
+        <div class="cell" onclick="handleClick(5)"></div>
+        <div class="cell" onclick="handleClick(6)"></div>
+        <div class="cell" onclick="handleClick(7)"></div>
+        <div class="cell" onclick="handleClick(8)"></div>
+    </div>
+    <div id="result"></div>
+    <button onclick="resetGame()">Reset Game</button>
+</main><!-- /BODY_BLOCK_2 -->
+    <!-- BODY_BLOCK_3 --><footer><p>© 2024 Tic Tac Toe Game</p></footer><!-- /BODY_BLOCK_3 -->
+</body>
 </html>
