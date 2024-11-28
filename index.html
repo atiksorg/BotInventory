@@ -1,54 +1,14 @@
 <html>
 <head>
     <!-- HEAD_BLOCK_1 --><meta charset="UTF-8"><title>My Page</title><!-- /HEAD_BLOCK_1 -->
-    <!-- HEAD_BLOCK_2 --><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"><!-- /HEAD_BLOCK_2 -->
+    <!-- HEAD_BLOCK_2 --><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"><style>.card-header button {border: none;background: none;}</style><!-- /HEAD_BLOCK_2 -->
     <!-- HEAD_BLOCK_3 --><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script><!-- /HEAD_BLOCK_3 -->
-    <!-- HEAD_BLOCK_4 --><script>function generateSteps() { const steps = Math.floor(Math.random() * 5) + 1; let content = ''; for (let i = 1; i <= steps; i++) { content += '<div class="card"><div class="card-header" id="heading' + i + '"><h2 class="mb-0 d-flex justify-content-between"><span>Шаг ' + i + '</span><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse' + i + '" aria-expanded="false" aria-controls="collapse' + i + '"><i class="fas fa-chevron-down"></i></button></h2></div><div id="collapse' + i + '" class="collapse" aria-labelledby="heading' + i + '" data-parent="#accordionExample"><div class="card-body">Небольшой текст для шага ' + i + '.</div></div></div>'; } document.getElementById('accordionExample').innerHTML = content; }</script><!-- /HEAD_BLOCK_4 -->
+    <!-- HEAD_BLOCK_4 --><script>function fetchApiData() { return new Promise(resolve => { const randomSteps = Math.floor(Math.random() * 5) + 2; const steps = []; for (let i = 1; i <= randomSteps; i++) { steps.push(`Шаг ${i}`); } resolve(steps); }); } function generateSteps() { fetchApiData().then(steps => { let content = ''; steps.forEach((step, index) => { content += '<div class="card"><div class="card-header" id="heading' + (index + 1) + '"><h2 class="mb-0 d-flex justify-content-between"><span>' + step + '</span><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse' + (index + 1) + '" aria-expanded="false" aria-controls="collapse' + (index + 1) + '"><i class="fas fa-chevron-down"></i></button></h2></div><div id="collapse' + (index + 1) + '" class="collapse" aria-labelledby="heading' + (index + 1) + '" data-parent="#accordionExample"><div class="card-body">Небольшой текст для ' + step + '.</div></div></div>'; }); document.getElementById('accordionExample').innerHTML = content; }); }</script><!-- /HEAD_BLOCK_4 -->
 </head>
 <body>
     <!-- BODY_BLOCK_1 --><header><h1 class="text-center">Welcome to our site</h1></header><!-- /BODY_BLOCK_1 -->
-    <!-- BODY_BLOCK_2 --><div class="container text-center mt-5">    <h2 class="mb-4">Опишите ваш бизнес-процесс</h2>    <form id="business-process-form">        <textarea class="form-control mx-auto mb-3" placeholder="Введите описание процесса" style="width: 300px;" name="processDescription"></textarea>        <button type="button" class="btn btn-primary" onclick="generateSteps()">Генерировать</button>    </form></div><!-- /BODY_BLOCK_2 -->
-    <!-- BODY_BLOCK_3 --><div class="accordion mx-auto" id="accordionExample" style="width: 400px;">
-    <div class="card">
-        <div class="card-header" id="headingOne">
-            <h2 class="mb-0 d-flex justify-content-between">
-                <span>Шаг 1</span>
-                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </h2>
-        </div>
-        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-            <div class="card-body">Небольшой текст для шага 1.</div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header" id="headingTwo">
-            <h2 class="mb-0 d-flex justify-content-between">
-                <span>Шаг 2</span>
-                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </h2>
-        </div>
-        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-            <div class="card-body">Небольшой текст для шага 2.</div>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-header" id="headingThree">
-            <h2 class="mb-0 d-flex justify-content-between">
-                <span>Шаг 3</span>
-                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                    <i class="fas fa-chevron-down"></i>
-                </button>
-            </h2>
-        </div>
-        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-            <div class="card-body">Небольшой текст для шага 3.</div>
-        </div>
-    </div>
-</div><!-- /BODY_BLOCK_3 -->
+    <!-- BODY_BLOCK_2 --><div class="container text-center mt-5"><h2 class="mb-4">Опишите ваш бизнес-процесс</h2><form id="business-process-form"><textarea class="form-control mx-auto mb-3" placeholder="Введите описание процесса" style="width: 300px;" name="processDescription"></textarea><button type="button" class="btn btn-primary" onclick="generateSteps()"><i class="fas fa-magic"></i> Генерировать</button></form></div><!-- /BODY_BLOCK_2 -->
+    <!-- BODY_BLOCK_3 --><div class="accordion mx-auto" id="accordionExample" style="width: 400px;"></div><!-- /BODY_BLOCK_3 -->
     <!-- BODY_BLOCK_4 --><footer><p class="text-center">© 2024 My Company</p></footer><!-- /BODY_BLOCK_4 -->
 </body>
 </html>
