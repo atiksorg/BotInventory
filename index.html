@@ -3,11 +3,58 @@
     <!-- HEAD_BLOCK_1 --><meta charset="UTF-8"><title>My Page</title><!-- /HEAD_BLOCK_1 -->
     <!-- HEAD_BLOCK_2 --><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"><!-- /HEAD_BLOCK_2 -->
     <!-- HEAD_BLOCK_3 --><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script><!-- /HEAD_BLOCK_3 -->
+    <!-- HEAD_BLOCK_4 --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"><!-- /HEAD_BLOCK_4 -->
 </head>
 <body>
     <!-- BODY_BLOCK_1 --><header><h1 class="text-center">Welcome to our site</h1></header><!-- /BODY_BLOCK_1 -->
-    <!-- BODY_BLOCK_2 --><div class="container text-center"><h2>Текстерия</h2><input type="text" class="form-control mx-auto" placeholder="Введите текст" style="width: 300px;"><button class="btn btn-primary">Генерировать</button></div><!-- /BODY_BLOCK_2 -->
-    <!-- BODY_BLOCK_3 --><div class="accordion mx-auto" id="accordionExample" style="width: 400px;"><div class="card"><div class="card-header" id="headingOne"><h2 class="mb-0"><button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><i class="fas fa-check"></i> Шаг 1</button></h2></div><div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample"><div class="card-body">Небольшой текст для шага 1.</div></div></div><div class="card"><div class="card-header" id="headingTwo"><h2 class="mb-0"><button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"><i class="fas fa-check"></i> Шаг 2</button></h2></div><div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample"><div class="card-body">Небольшой текст для шага 2.</div></div></div><div class="card"><div class="card-header" id="headingThree"><h2 class="mb-0"><button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"><i class="fas fa-check"></i> Шаг 3</button></h2></div><div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample"><div class="card-body">Небольшой текст для шага 3.</div></div></div></div><!-- /BODY_BLOCK_3 -->
+    <!-- BODY_BLOCK_2 --><div class="container text-center mt-5">
+    <h2 class="mb-4">Опишите ваш бизнес-процесс</h2>
+    <form id="business-process-form">
+        <textarea class="form-control mx-auto mb-3" placeholder="Введите описание процесса" style="width: 300px;" name="processDescription"></textarea>
+        <button type="submit" class="btn btn-primary">Генерировать</button>
+    </form>
+</div><!-- /BODY_BLOCK_2 -->
+    <!-- BODY_BLOCK_3 --><div class="accordion mx-auto" id="accordionExample" style="width: 400px;">
+    <div class="card">
+        <div class="card-header" id="headingOne">
+            <h2 class="mb-0 d-flex justify-content-between">
+                <span>Шаг 1</span>
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </h2>
+        </div>
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+            <div class="card-body">Небольшой текст для шага 1.</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingTwo">
+            <h2 class="mb-0 d-flex justify-content-between">
+                <span>Шаг 2</span>
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </h2>
+        </div>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+            <div class="card-body">Небольшой текст для шага 2.</div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingThree">
+            <h2 class="mb-0 d-flex justify-content-between">
+                <span>Шаг 3</span>
+                <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </h2>
+        </div>
+        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+            <div class="card-body">Небольшой текст для шага 3.</div>
+        </div>
+    </div>
+</div><!-- /BODY_BLOCK_3 -->
     <!-- BODY_BLOCK_4 --><footer><p class="text-center">© 2024 My Company</p></footer><!-- /BODY_BLOCK_4 -->
 </body>
 </html>
