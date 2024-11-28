@@ -1,89 +1,13 @@
 <html>
 <head>
-    <!-- HEAD_BLOCK_1 --><meta charset="UTF-8"><title>Game Character</title><!-- /HEAD_BLOCK_1 -->
-    <!-- HEAD_BLOCK_2 --><style>
-    body {
-        display: flex;
-        justify-content: space-between;
-        padding: 20px;
-        margin: 0;
-        font-family: 'Press Start 2P', cursive;
-        background: url('https://example.com/bg.jpg') no-repeat center center fixed;
-        background-size: cover;
-        color: #fafafa;
-    }
-    .container {
-        display: flex;
-        width: 100%;
-    }
-    .character, .inventory {
-        background: rgba(0, 0, 0, 0.7);
-        border-radius: 10px;
-        padding: 20px;
-        margin: 10px;
-        width: 45%;
-    }
-    .character h2, .inventory h2 {
-        text-align: center;
-        color: #ffcc00;
-    }
-    .slot {
-        width: 60px;
-        height: 60px;
-        border: 2px dashed #ffcc00;
-        margin: 10px auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 10px;
-        font-size: 10px;
-        color: #ffcc00;
-        text-transform: uppercase;
-    }
-    .draggable {
-        cursor: move;
-        background: rgba(255, 255, 255, 0.2);
-    }
-    footer {
-        text-align: center;
-        margin-top: 20px;
-        color: #c0c0c0;
-    }
-</style><!-- /HEAD_BLOCK_2 -->
-    <!-- HEAD_BLOCK_3 --><script>
-    function drag(event) {
-        event.dataTransfer.setData("text", event.target.id);
-    }
-    function allowDrop(event) {
-        event.preventDefault();
-    }
-    function drop(event) {
-        event.preventDefault();
-        var data = event.dataTransfer.getData("text");
-        event.target.appendChild(document.getElementById(data));
-    }
-</script><!-- /HEAD_BLOCK_3 -->
+    <!-- HEAD_BLOCK_1 --><meta charset="UTF-8"><title>My Page</title><!-- /HEAD_BLOCK_1 -->
+    <!-- HEAD_BLOCK_2 --><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"><!-- /HEAD_BLOCK_2 -->
+    <!-- HEAD_BLOCK_3 --><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script><!-- /HEAD_BLOCK_3 -->
 </head>
 <body>
-    <!-- BODY_BLOCK_1 --><header><h1>Game Character</h1></header><!-- /BODY_BLOCK_1 -->
-    <!-- BODY_BLOCK_2 --><div class="container">
-    <div class="character">
-        <h2>Character</h2>
-        <div class="slot" id="head" ondrop="drop(event)" ondragover="allowDrop(event)">Head</div>
-        <div class="slot" id="helmet" ondrop="drop(event)" ondragover="allowDrop(event)">Helmet</div>
-        <div class="slot" id="chest" ondrop="drop(event)" ondragover="allowDrop(event)">Chest</div>
-        <div class="slot" id="armor" ondrop="drop(event)" ondragover="allowDrop(event)">Armor</div>
-        <div class="slot" id="legs" ondrop="drop(event)" ondragover="allowDrop(event)">Legs</div>
-        <div class="slot" id="boots" ondrop="drop(event)" ondragover="allowDrop(event)">Boots</div>
-    </div><!-- /BODY_BLOCK_2 -->
-    <!-- BODY_BLOCK_3 --><div class="inventory">
-        <h2>Inventory</h2>
-        <div class="slot draggable" id="item1" draggable="true" ondragstart="drag(event)">Sword</div>
-        <div class="slot draggable" id="item2" draggable="true" ondragstart="drag(event)">Shield</div>
-        <div class="slot draggable" id="item3" draggable="true" ondragstart="drag(event)">Item 3</div>
-        <div class="slot draggable" id="item4" draggable="true" ondragstart="drag(event)">Health Potion</div>
-        <div class="slot draggable" id="item5" draggable="true" ondragstart="drag(event)">Mana Potion</div>
-    </div><!-- /BODY_BLOCK_3 -->
-    <!-- BODY_BLOCK_4 --><footer><p>© 2024 Game Studio</p></footer><!-- /BODY_BLOCK_4 -->
+    <!-- BODY_BLOCK_1 --><header><h1 class="text-center">Welcome to our site</h1></header><!-- /BODY_BLOCK_1 -->
+    <!-- BODY_BLOCK_2 --><div class="container text-center"><h2>Текстерия</h2><input type="text" class="form-control mx-auto" placeholder="Введите текст" style="width: 300px;"><button class="btn btn-primary">Генерировать</button></div><!-- /BODY_BLOCK_2 -->
+    <!-- BODY_BLOCK_3 --><div class="accordion mx-auto" id="accordionExample" style="width: 400px;"><div class="card"><div class="card-header" id="headingOne"><h2 class="mb-0"><button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><i class="fas fa-check"></i> Шаг 1</button></h2></div><div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample"><div class="card-body">Небольшой текст для шага 1.</div></div></div><div class="card"><div class="card-header" id="headingTwo"><h2 class="mb-0"><button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"><i class="fas fa-check"></i> Шаг 2</button></h2></div><div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample"><div class="card-body">Небольшой текст для шага 2.</div></div></div><div class="card"><div class="card-header" id="headingThree"><h2 class="mb-0"><button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree"><i class="fas fa-check"></i> Шаг 3</button></h2></div><div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample"><div class="card-body">Небольшой текст для шага 3.</div></div></div></div><!-- /BODY_BLOCK_3 -->
+    <!-- BODY_BLOCK_4 --><footer><p class="text-center">© 2024 My Company</p></footer><!-- /BODY_BLOCK_4 -->
 </body>
 </html>
