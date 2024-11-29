@@ -282,7 +282,7 @@ body.dark-mode .modal-content {
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="save-btn">Save</button>
-                <button type="button" class="btn btn-danger" id="delete-btn">Delete</button>
+                <button type="button" class="btn btn-danger" id="delete-btn" data-bs-dismiss="modal">Delete</button>
             </div>
         </div>
     </div>
@@ -445,6 +445,7 @@ class CharacterConstructor {
         });
     }
     
+    
     deleteItem(equippedItem) {
         const slotId = equippedItem.slotId;
         const equippedData = this.equippedItems.get(slotId);
@@ -454,8 +455,6 @@ class CharacterConstructor {
         } else {
             console.log('Equipped data not found for slot id:', slotId);
         }
-        const modal = new bootstrap.Modal(document.getElementById('item-modal'));
-        modal.hide();
     }
 
 
