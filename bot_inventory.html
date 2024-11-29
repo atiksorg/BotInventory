@@ -282,6 +282,7 @@ body.dark-mode .modal-content {
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="save-btn">Save</button>
+                <button type="button" class="btn btn-danger" id="delete-btn">Delete</button>
             </div>
         </div>
     </div>
@@ -334,27 +335,27 @@ const slotConfig = [
     { 
         zone: 'head', 
         positions: [
-            { top: '5%', left: '20%' },
-            { top: '5%', left: '50%' },
-            { top: '5%', left: '80%' }
+            { id: 'head-1', top: '5%', left: '20%' },
+            { id: 'head-2', top: '5%', left: '50%' },
+            { id: 'head-3', top: '5%', left: '80%' }
         ]
     },
     { 
         zone: 'torso', 
         positions: [
-            { top: '30%', left: '10%' },
-            { top: '30%', left: '30%' },
-            { top: '30%', left: '50%' },
-            { top: '30%', left: '70%' },
-            { top: '45%', left: '30%' },
-            { top: '45%', left: '50%' }
+            { id: 'torso-1', top: '30%', left: '10%' },
+            { id: 'torso-2', top: '30%', left: '30%' },
+            { id: 'torso-3', top: '30%', left: '50%' },
+            { id: 'torso-4', top: '30%', left: '70%' },
+            { id: 'torso-5', top: '45%', left: '30%' },
+            { id: 'torso-6', top: '45%', left: '50%' }
         ]
     },
     { 
         zone: 'legs', 
         positions: [
-            { top: '60%', left: '40%' },
-            { top: '60%', left: '60%' }
+            { id: 'legs-1', top: '60%', left: '40%' },
+            { id: 'legs-2', top: '60%', left: '60%' }
         ]
     }
 ];
@@ -407,24 +408,21 @@ class CharacterConstructor {
 
             this.inventory.appendChild(categoryElement);
         });
- 
     }
 
     generateSlots() {
         this.slots = slotConfig.flatMap(config => 
-            config.positions.map(pos => {
-                const slot = document.createElement('div');
-                slot.className = 'slot';
-                slot.dataset.zone = config.zone;
-                slot.style.top = pos.top;
-                slot.style.left = pos.left;
-                this.characterArea.appendChild(slot);
-                return slot;
-            })
-        );
-        
-        
-        
+          config.positions.map(pos => {
+              const slot = document.createElement('div');
+              slot.className = 'slot';
+              slot.dataset.zone = config.zone;
+              slot.dataset.id = pos.id; // Use the unique ID
+              slot.style.top = pos.top;
+              slot.style.left = pos.left;
+              this.characterArea.appendChild(slot);
+              return slot;
+          })
+      );
     }
 
     initializeEventListeners() {
@@ -436,7 +434,30 @@ class CharacterConstructor {
         
         this.toggleThemeBtn.addEventListener('click', this.toggleTheme.bind(this));
         this.resetBtn.addEventListener('click', this.resetCharacter.bind(this));
+        this.deleteBtn = document.getElementById('delete-btn');
+        this.deleteBtn.addEventListener('click', () => {
+            if (this.currentEquippedItem) {
+                this.deleteItem(this.currentEquippedItem);
+                this.currentEquippedItem = null;
+            } else {
+                console.log('No current equipped item to delete');
+            }
+        });
     }
+    
+    deleteItem(equippedItem) {
+        const slotId = equippedItem.slotId;
+        const equippedData = this.equippedItems.get(slotId);
+        if (equippedData) {
+            equippedItem.remove(); // Remove the equipped item from the character area
+            this.equippedItems.delete(slotId);
+        } else {
+            console.log('Equipped data not found for slot id:', slotId);
+        }
+        const modal = new bootstrap.Modal(document.getElementById('item-modal'));
+        modal.hide();
+    }
+
 
     handleDragStart(e) {
         const item = e.target.closest('.item');
@@ -473,12 +494,14 @@ class CharacterConstructor {
     }
 
     equipItem(itemData, slot) {
-        if (this.equippedItems.has(slot)) {
+        if (this.equippedItems.has(slot.dataset.id)) {
             this.unequipItem(slot);
         }
 
         const newItem = this.createEquippedItem(itemData, slot);
-        this.equippedItems.set(slot, newItem);
+        newItem.slotId = slot.dataset.id;
+        newItem.addEventListener('click', () => this.showItemModal(newItem));
+        this.equippedItems.set(slot.dataset.id, { newItem: newItem });
     }
 
     createEquippedItem(itemData, slot) {
@@ -488,18 +511,10 @@ class CharacterConstructor {
         newItem.dataset.type = itemData.type;
         newItem.style.top = slot.style.top;
         newItem.style.left = slot.style.left;
-        
-        newItem.addEventListener('click', () => this.unequipItem(slot));
+        newItem.slot = slot; // Set the slot reference on the newItem
         this.characterArea.appendChild(newItem);
+        console.log('Created equipped item:', newItem, 'in slot:', slot); // Отладочное сообщение
         return newItem;
-    }
-
-    unequipItem(slot) {
-        if (this.equippedItems.has(slot)) {
-            const item = this.equippedItems.get(slot);
-            item.remove(); // Remove the item from the DOM
-            this.equippedItems.delete(slot);
-        }
     }
 
     findCategoryForItem(type) {
@@ -570,16 +585,14 @@ class CharacterConstructor {
     static initialize() {
         return new CharacterConstructor();
     }
-    
-    
-    
-    showItemModal(item) {
-    this.hideTooltip();
-    const modal = document.getElementById('item-modal');
-    // Use Bootstrap's modal show method
-    new bootstrap.Modal(modal).show();
-    this.resetModal();
-}
+
+    showItemModal(equippedItem) {
+        this.hideTooltip();
+        const modal = new bootstrap.Modal(document.getElementById('item-modal'));
+        modal.show();
+        this.resetModal();
+        this.currentEquippedItem = equippedItem; // Set the current equipped item
+    }
 
     resetModal() {
         document.getElementById('item-text').value = '';
@@ -587,13 +600,10 @@ class CharacterConstructor {
         document.getElementById('item-checkbox').checked = false;
         document.getElementById('item-textarea').value = '';
     }
-    
-    
 }
 
 // Initialize the Character Constructor when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', CharacterConstructor.initialize);
-
 
 document.getElementById('save-btn').addEventListener('click', () => {
     const text = document.getElementById('item-text').value;
@@ -608,8 +618,8 @@ document.getElementById('save-btn').addEventListener('click', () => {
     console.log('Textarea:', textarea);
 
     // Use Bootstrap's modal hide method
-    const modal = document.getElementById('item-modal');
-    new bootstrap.Modal(modal).hide();
+    const modal = new bootstrap.Modal(document.getElementById('item-modal'));
+    modal.hide();
 });
 
 </script>
