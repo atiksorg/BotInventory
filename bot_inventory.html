@@ -1,454 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Character Constructor</title>
+    <style>
+:root {
+    /* Color Variables */
+    --primary-color: #4a90e2;
+    --secondary-color: #f5f5f5;
+    --border-color: #ddd;
+    --dark-bg-primary: #2e2e2e;
+    --dark-bg-secondary: #3e3e3e;
 
-<html>
-    <head>
-        <!-- HEAD_BLOCK_1 --><meta charset="UTF-8"><title>Character Constructor</title><!-- /HEAD_BLOCK_1 -->
-        <!-- HEAD_BLOCK_2 --><style>
-            :root {
-                --primary-color: #4a90e2;
-                --secondary-color: #f5f5f5;
-                --border-color: #ddd;
-                --slot-size: 70px;
-                --item-size: 60px;
-            }
+    /* Size Variables */
+    --slot-size: 70px;
+    --item-size: 60px;
+}
 
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
+/* Reset and Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                background-color: #f0f2f5;
-                padding: 20px;
-            }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+    padding: 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
 
-            .container {
-                display: flex;
-                gap: 30px;
-                max-width: 1200px;
-                min-width: 800px;
-                margin: 0 auto;
-                background-color: white;
-                padding: 20px;
-                border-radius: 10px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                overflow-x: auto;
-            }
+/* Layout */
+.container {
+    display: flex;
+    gap: 30px;
+    max-width: 1200px;
+    min-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow-x: auto;
+}
 
-            .inventory {
-                width: 350px;
-                border: 2px solid var(--border-color);
-                border-radius: 8px;
-                padding: 15px;
-                background-color: var(--secondary-color);
-                height: 600px;
-                overflow-y: auto; 
-            }
+.character-area {
+    width: 500px;
+    height: 600px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    position: relative;
+    background: linear-gradient(to bottom, #e6f3ff, #ffffff);
+}
 
-            .character-area {
-                width: 500px;
-                height: 600px;
-                border: 2px solid var(--border-color);
-                border-radius: 8px;
-                position: relative;
-                background: linear-gradient(to bottom, #e6f3ff, #ffffff);
-                
-            }
+.inventory {
+    width: 350px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    background-color: var(--secondary-color);
+    height: 600px;
+    overflow-y: auto; 
+}
 
-            .item {
-                width: var(--item-size);
-                height: var(--item-size);
-                border: 2px solid var(--border-color);
-                border-radius: 8px;
-                margin: 5px;
-                background-color: white;
-                cursor: move;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                transition: transform 0.2s, box-shadow 0.2s;
-                user-select: none;
-            }
+/* Inventory Categories */
+.category {
+    margin-bottom: 25px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+}
 
-            .item:hover {
-                transform: scale(1.05);
-                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            }
+.category-title {
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--border-color);
+}
 
-            .item:active {
-                transform: scale(0.95);
-            }
+/* Items and Slots */
+.item {
+    width: var(--item-size);
+    height: var(--item-size);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    margin: 5px;
+    background-color: white;
+    cursor: move;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    user-select: none;
+}
 
-            .equipped {
-                position: absolute;
-                transition: all 0.3s ease;
-                z-index: 2;
-            }
+.slot {
+    width: var(--slot-size);
+    height: var(--slot-size);
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255,255,255,0.5);
+    transition: background-color 0.3s;
+}
 
-            .slot {
-                width: var(--slot-size);
-                height: var(--slot-size);
-                border: 2px dashed var(--border-color);
-                border-radius: 8px;
-                position: absolute;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background-color: rgba(255,255,255,0.5);
-                transition: background-color 0.3s;
-            }
+.equipped {
+    position: absolute;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
 
-            .slot.highlight {
-                background-color: rgba(74, 144, 226, 0.2);
-                border-color: var(--primary-color);
-            }
+/* Interactive States */
+.item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
 
-            .category {
-                margin-bottom: 25px;
-                background-color: white;
-                padding: 10px;
-                border-radius: 8px;
-            }
+.item:active {
+    transform: scale(0.95);
+}
 
-            .category-title {
-                font-weight: bold;
-                margin-bottom: 15px;
-                color: var(--primary-color);
-                padding-bottom: 5px;
-                border-bottom: 2px solid var(--border-color);
-            }
+.slot.highlight {
+    background-color: rgba(74, 144, 226, 0.2);
+    border-color: var(--primary-color);
+}
 
-            .controls {
-                position: absolute;
-                bottom: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                display: flex;
-                gap: 10px;
-            }
+/* Controls */
+.controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
 
-            .button {
-                padding: 8px 16px;
-                background-color: var(--primary-color);
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                transition: background-color 0.3s;
-            }
+.button {
+    padding: 8px 16px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 
-            .button:hover {
-                background-color: #357abd;
-            }
+.button:hover {
+    background-color: #357abd;
+}
 
-            .tooltip {
-                position: absolute;
-                background-color: black;
-                color: white;
-                padding: 5px 10px;
-                border-radius: 4px;
-                font-size: 12px;
-                pointer-events: none;
-                opacity: 0;
-                transition: opacity 0.3s;
-            }
-            body.dark-mode {
-                background-color: #1e1e1e;
-                color: #f5f5f5;
-            }
+/* Tooltip */
+.tooltip {
+    position: fixed;
+    background-color: black;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
 
-            body.dark-mode .container {
-                background-color: #2e2e2e;
-            }
+/* Dark Mode */
+body.dark-mode {
+    background-color: #1e1e1e;
+    color: #f5f5f5;
+}
 
-            body.dark-mode .inventory, 
-            body.dark-mode .character-area {
-                background-color: #3e3e3e;
-                border-color: #555;
-            }
+body.dark-mode .container {
+    background-color: var(--dark-bg-primary);
+}
 
-            body.dark-mode .item {
-                background-color: #4e4e4e;
-            }
+body.dark-mode .inventory, 
+body.dark-mode .character-area {
+    background-color: var(--dark-bg-secondary);
+    border-color: #555;
+}
 
-            body.dark-mode .slot {
-                background-color: rgba(255, 255, 255, 0.1);
-            }
+body.dark-mode .item {
+    background-color: #4e4e4e;
+}
 
-            body.dark-mode .button {
-                background-color: #357abd;
-            }
-            body.dark-mode .inventory {
-                background-color: #2e2e2e;
-            }
+body.dark-mode .slot {
+    background-color: rgba(255, 255, 255, 0.1);
+}
 
-            body.dark-mode .character-area {
-                background: linear-gradient(to bottom, #3e3e3e, #2e2e2e);
-            }
-            body.dark-mode .category {
-                background-color: #4e4e4e;
-            }
-            .item, .equipped {
-                transition: transform 0.2s, box-shadow 0.2s, top 0.3s, left 0.3s;
-            }
-        </style><!-- /HEAD_BLOCK_2 -->
-    </head>
-    <body>
-        <!-- BODY_BLOCK_1 --><div class="container">
-            <!-- BODY_BLOCK_2 --><div class="character-area" id="character-area">
-                <!-- Слоты генерируются динамически через JavaScript -->
-            </div><!-- /BODY_BLOCK_2 -->
-            <!-- BODY_BLOCK_3 -->
-            
-            <div class="controls">
-                <button class="button" id="toggle-theme-btn">Toggle Theme</button>
-            </div>
-            
+body.dark-mode .button {
+    background-color: #357abd;
+}
 
-<div class="inventory" id="inventory">
-    <div class="category">
-        <div class="category-title">Голова</div>
-        <div class="item" draggable="true" data-type="head" data-tooltip="Шляпа">🎩</div>
-        <div class="item" draggable="true" data-type="head" data-tooltip="Очки">👓</div>
-        <div class="item" draggable="true" data-type="head" data-tooltip="Маска">😷</div>
-        <!-- Новые предметы -->
-        <div class="item" draggable="true" data-type="head" data-tooltip="Каска">⛑️</div>
-        <div class="item" draggable="true" data-type="head" data-tooltip="Кепка">🧢</div>
-        <div class="item" draggable="true" data-type="head" data-tooltip="Шлем">🪖</div>
-        <div class="item" draggable="true" data-type="head" data-tooltip="Корона">👑</div>
-        <div class="item" draggable="true" data-type="head" data-tooltip="Берет">🎓</div>
+body.dark-mode .character-area {
+    background: linear-gradient(to bottom, #3e3e3e, #2e2e2e);
+}
+
+body.dark-mode .category {
+    background-color: #4e4e4e;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="character-area" id="character-area"></div>
+        
+        <div class="inventory" id="inventory">
+            <!-- Inventory categories will be dynamically populated -->
+        </div>
+        
+        <div class="controls">
+            <button class="button" id="toggle-theme-btn">Toggle Theme</button>
+            <button class="button" id="reset-btn">Reset</button>
+        </div>
     </div>
-    <div class="category">
-        <div class="category-title">Туловище</div>
-        <div class="item" draggable="true" data-type="torso" data-tooltip="Рубашка">👕</div>
-        <div class="item" draggable="true" data-type="torso" data-tooltip="Куртка">🧥</div>
-        <!-- Новые предметы -->
-        <div class="item" draggable="true" data-type="torso" data-tooltip="Пальто">🧥</div>
-        <div class="item" draggable="true" data-type="torso" data-tooltip="Свитер">🧶</div>
-        <div class="item" draggable="true" data-type="torso" data-tooltip="Футболка">👚</div>
-        <div class="item" draggable="true" data-type="torso" data-tooltip="Жилет">🦺</div>
-        <div class="item" draggable="true" data-type="torso" data-tooltip="Пиджак">🧥</div>
-    </div>
-    <div class="category">
-        <div class="category-title">Ноги</div>
-        <div class="item" draggable="true" data-type="legs" data-tooltip="Штаны">👖</div>
-        <div class="item" draggable="true" data-type="legs" data-tooltip="Обувь">👞</div>
-        <!-- Новые предметы -->
-        <div class="item" draggable="true" data-type="legs" data-tooltip="Ботинки">🥾</div>
-        <div class="item" draggable="true" data-type="legs" data-tooltip="Шорты">🩳</div>
-        <div class="item" draggable="true" data-type="legs" data-tooltip="Юбка">👗</div>
-        <div class="item" draggable="true" data-type="legs" data-tooltip="Сапоги">👢</div>
-        <div class="item" draggable="true" data-type="legs" data-tooltip="Кроссовки">👟</div>
-    </div>
-</div>
-            
-            <!-- /BODY_BLOCK_3 -->
-        </div><!-- /BODY_BLOCK_1 -->
-        <!-- BODY_BLOCK_4 --><script>
-            class CharacterConstructor {
-                constructor() {
-                    this.inventory = document.getElementById('inventory');
-                    this.characterArea = document.getElementById('character-area');
-                    this.tooltip = this.createTooltip();
-                    this.slots = this.generateSlots();
-                    this.equippedItems = new Map();
-                    this.initializeEventListeners();
-                }
 
-                createTooltip() {
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'tooltip';
-                    tooltip.style.position = 'fixed';
-                    tooltip.style.zIndex = '1000';
-                    document.body.appendChild(tooltip);
-                    return tooltip;
-                }
+    <script>
+// inventory-data.js
+const inventoryData = [
+    {
+        category: 'Голова',
+        items: [
+            { emoji: '🎩', type: 'head', tooltip: 'Шляпа' },
+            { emoji: '👓', type: 'head', tooltip: 'Очки' },
+            { emoji: '😷', type: 'head', tooltip: 'Маска' },
+            { emoji: '⛑️', type: 'head', tooltip: 'Каска' },
+            { emoji: '🧢', type: 'head', tooltip: 'Кепка' },
+            { emoji: '🪖', type: 'head', tooltip: 'Шлем' },
+            { emoji: '👑', type: 'head', tooltip: 'Корона' },
+            { emoji: '🎓', type: 'head', tooltip: 'Берет' }
+        ]
+    },
+    {
+        category: 'Туловище',
+        items: [
+            { emoji: '👕', type: 'torso', tooltip: 'Рубашка' },
+            { emoji: '🧥', type: 'torso', tooltip: 'Куртка' },
+            { emoji: '🧥', type: 'torso', tooltip: 'Пальто' },
+            { emoji: '🧶', type: 'torso', tooltip: 'Свитер' },
+            { emoji: '👚', type: 'torso', tooltip: 'Футболка' },
+            { emoji: '🦺', type: 'torso', tooltip: 'Жилет' },
+            { emoji: '🧥', type: 'torso', tooltip: 'Пиджак' }
+        ]
+    },
+    {
+        category: 'Ноги',
+        items: [
+            { emoji: '👖', type: 'legs', tooltip: 'Штаны' },
+            { emoji: '👞', type: 'legs', tooltip: 'Обувь' },
+            { emoji: '🥾', type: 'legs', tooltip: 'Ботинки' },
+            { emoji: '🩳', type: 'legs', tooltip: 'Шорты' },
+            { emoji: '👗', type: 'legs', tooltip: 'Юбка' },
+            { emoji: '👢', type: 'legs', tooltip: 'Сапоги' },
+            { emoji: '👟', type: 'legs', tooltip: 'Кроссовки' }
+        ]
+    }
+];
 
-                generateSlots() {
-                    const slotConfig = [
-                        { zone: 'head', positions: [
-                            { top: '5%', left: '20%' },
-                            { top: '5%', left: '50%' },
-                            { top: '5%', left: '80%' }
-                        ]},
-                        { zone: 'torso', positions: [
-                            { top: '30%', left: '10%' },
-                            { top: '30%', left: '30%' },
-                            { top: '30%', left: '50%' },
-                            { top: '30%', left: '70%' },
-                            { top: '45%', left: '30%' },
-                            { top: '45%', left: '50%' }
-                        ]},
-                        { zone: 'legs', positions: [
-                            { top: '60%', left: '40%' },
-                            { top: '60%', left: '60%' }
-                        ]}
-                    ];
+// slot-config.js
+const slotConfig = [
+    { 
+        zone: 'head', 
+        positions: [
+            { top: '5%', left: '20%' },
+            { top: '5%', left: '50%' },
+            { top: '5%', left: '80%' }
+        ]
+    },
+    { 
+        zone: 'torso', 
+        positions: [
+            { top: '30%', left: '10%' },
+            { top: '30%', left: '30%' },
+            { top: '30%', left: '50%' },
+            { top: '30%', left: '70%' },
+            { top: '45%', left: '30%' },
+            { top: '45%', left: '50%' }
+        ]
+    },
+    { 
+        zone: 'legs', 
+        positions: [
+            { top: '60%', left: '40%' },
+            { top: '60%', left: '60%' }
+        ]
+    }
+];
 
-                    return slotConfig.flatMap(config => 
-                        config.positions.map(pos => {
-                            const slot = document.createElement('div');
-                            slot.className = 'slot';
-                            slot.dataset.zone = config.zone;
-                            slot.style.top = pos.top;
-                            slot.style.left = pos.left;
-                            this.characterArea.appendChild(slot);
-                            return slot;
-                        })
-                    );
-                }
 
-                initializeEventListeners() {
-                    // Drag and Drop with event delegation
-                    this.inventory.addEventListener('dragstart', this.handleDragStart.bind(this));
-                    this.characterArea.addEventListener('dragover', this.handleDragOver.bind(this));
-                    this.characterArea.addEventListener('drop', this.handleDrop.bind(this));
-                    this.characterArea.addEventListener('dragleave', this.handleDragLeave.bind(this));
-
-                    // Tooltips with delegation
-                    this.inventory.addEventListener('mousemove', this.handleTooltip.bind(this));
-                    document.addEventListener('mouseleave', () => this.hideTooltip());
-
-                    // Reset button
-                    const resetButton = document.getElementById('reset-btn');
-                    if (resetButton) resetButton.addEventListener('click', this.resetCharacter.bind(this));
-                }
-
-                handleDragStart(e) {
-                    const item = e.target.closest('.item');
-                    if (item) {
-                        e.dataTransfer.setData('text/plain', JSON.stringify({
-                            type: item.dataset.type,
-                            zone: item.dataset.zone
-                        }));
-                        this.highlightValidSlots(item.dataset.type);
-                    }
-                }
-
-                handleDragOver(e) {
-                    e.preventDefault();
-                    const slot = e.target.closest('.slot');
-                    if (slot) {
-                        slot.classList.add('highlight');
-                    }
-                }
-
-                handleDrop(e) {
-                    e.preventDefault();
-                    const slot = e.target.closest('.slot');
-                    if (!slot) return;
-
-                    try {
-                        const itemData = JSON.parse(e.dataTransfer.getData('text/plain'));
-                        if (slot.dataset.zone === itemData.type) {
-                            this.equipItem(itemData.type, slot);
-                        }
-                    } catch (err) {
-                        console.error('Drop error:', err);
-                    }
-
-                    this.highlightValidSlots(null);
-                }
-
-                equipItem(type, slot) {
-    const template = this.inventory.querySelector(`[data-type="${type}"]`);
-    if (!template) return;
-
-    if (this.equippedItems.has(slot)) {
-        this.unequipItem(slot);
+class CharacterConstructor {
+    constructor() {
+        this.initializeDOM();
+        this.createTooltip();
+        this.generateSlots();
+        this.populateInventory();
+        this.initializeEventListeners();
     }
 
-    const newItem = this.createEquippedItem(template, slot);
-    this.equippedItems.set(slot, newItem);
-    template.remove(); // Remove from inventory
-}
-
-createEquippedItem(template, slot) {
-    const newItem = template.cloneNode(true);
-    newItem.classList.add('equipped');
-    newItem.style.position = 'absolute';
-    newItem.style.top = slot.style.top;
-    newItem.style.left = slot.style.left;
-    
-    newItem.addEventListener('click', () => this.unequipItem(slot));
-
-    this.characterArea.appendChild(newItem);
-    return newItem;
-}
-
-unequipItem(slot) {
-    if (this.equippedItems.has(slot)) {
-        const item = this.equippedItems.get(slot);
-        this.inventory.appendChild(item); // Return to inventory
-        item.classList.remove('equipped');
-        item.style.position = '';
-        item.style.top = '';
-        item.style.left = '';
-        this.equippedItems.delete(slot);
+    initializeDOM() {
+        this.inventory = document.getElementById('inventory');
+        this.characterArea = document.getElementById('character-area');
+        this.toggleThemeBtn = document.getElementById('toggle-theme-btn');
+        this.resetBtn = document.getElementById('reset-btn');
+        this.equippedItems = new Map();
     }
-}
 
-                handleTooltip(e) {
-                    const item = e.target.closest('.item');
-                    if (!item || !item.dataset.tooltip) {
-                        this.hideTooltip();
-                        return;
-                    }
+    createTooltip() {
+        this.tooltip = document.createElement('div');
+        this.tooltip.className = 'tooltip';
+        document.body.appendChild(this.tooltip);
+    }
 
-                    this.tooltip.innerHTML = this.generateTooltipContent(item);
-                    this.tooltip.style.opacity = '1';
+    populateInventory() {
+        inventoryData.forEach(category => {
+            const categoryElement = document.createElement('div');
+            categoryElement.className = 'category';
 
-                    const tooltipRect = this.tooltip.getBoundingClientRect();
-                    let left = e.pageX + 10;
-                    let top = e.pageY + 10;
+            const titleElement = document.createElement('div');
+            titleElement.className = 'category-title';
+            titleElement.textContent = category.category;
+            categoryElement.appendChild(titleElement);
 
-                    if (left + tooltipRect.width > window.innerWidth) {
-                        left = window.innerWidth - tooltipRect.width - 10;
-                    }
-                    if (top + tooltipRect.height > window.innerHeight) {
-                        top = window.innerHeight - tooltipRect.height - 10;
-                    }
-
-                    this.tooltip.style.left = `${left}px`;
-                    this.tooltip.style.top = `${top}px`;
-                }
-
-                generateTooltipContent(item) {
-                    return `<div class="tooltip-title">${item.dataset.tooltip}</div>`;
-                }
-
-                hideTooltip() {
-                    this.tooltip.style.opacity = '0';
-                }
-
-                highlightValidSlots(type) {
-                    this.slots.forEach(slot => {
-                        slot.classList.toggle('highlight', type ? slot.dataset.zone === type : false);
-                    });
-                }
-
-                resetCharacter() {
-                    this.equippedItems.forEach(item => {
-                        this.inventory.appendChild(item);
-                        item.classList.remove('equipped');
-                        item.style.position = '';
-                        item.style.top = '';
-                        item.style.left = '';
-                    });
-                    this.equippedItems.clear();
-                }
-            }
-
-            // Initialize on page load
-            document.addEventListener('DOMContentLoaded', () => {
-                new CharacterConstructor();
+            category.items.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'item';
+                itemElement.draggable = true;
+                itemElement.dataset.type = item.type;
+                itemElement.dataset.tooltip = item.tooltip;
+                itemElement.textContent = item.emoji;
+                categoryElement.appendChild(itemElement);
             });
-            
-            document.getElementById('toggle-theme-btn').addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-});
-            
-        </script><!-- /BODY_BLOCK_4 -->
-    </body>
+
+            this.inventory.appendChild(categoryElement);
+        });
+    }
+
+    generateSlots() {
+        this.slots = slotConfig.flatMap(config => 
+            config.positions.map(pos => {
+                const slot = document.createElement('div');
+                slot.className = 'slot';
+                slot.dataset.zone = config.zone;
+                slot.style.top = pos.top;
+                slot.style.left = pos.left;
+                this.characterArea.appendChild(slot);
+                return slot;
+            })
+        );
+    }
+
+    initializeEventListeners() {
+        this.inventory.addEventListener('dragstart', this.handleDragStart.bind(this));
+        this.characterArea.addEventListener('dragover', this.handleDragOver.bind(this));
+        this.characterArea.addEventListener('drop', this.handleDrop.bind(this));
+        this.inventory.addEventListener('mousemove', this.handleTooltip.bind(this));
+        document.addEventListener('mouseleave', () => this.hideTooltip());
+        
+        this.toggleThemeBtn.addEventListener('click', this.toggleTheme.bind(this));
+        this.resetBtn.addEventListener('click', this.resetCharacter.bind(this));
+    }
+
+    handleDragStart(e) {
+        const item = e.target.closest('.item');
+        if (item) {
+            e.dataTransfer.setData('text/plain', JSON.stringify({
+                type: item.dataset.type,
+                emoji: item.textContent
+            }));
+            this.highlightValidSlots(item.dataset.type);
+        }
+    }
+
+    handleDragOver(e) {
+        e.preventDefault();
+        const slot = e.target.closest('.slot');
+        if (slot) slot.classList.add('highlight');
+    }
+
+    handleDrop(e) {
+        e.preventDefault();
+        const slot = e.target.closest('.slot');
+        if (!slot) return;
+
+        try {
+            const itemData = JSON.parse(e.dataTransfer.getData('text/plain'));
+            if (slot.dataset.zone === itemData.type) {
+                this.equipItem(itemData, slot);
+            }
+        } catch (err) {
+            console.error('Drop error:', err);
+        }
+
+        this.highlightValidSlots(null);
+    }
+
+    equipItem(itemData, slot) {
+        if (this.equippedItems.has(slot)) {
+            this.unequipItem(slot);
+        }
+
+        const newItem = this.createEquippedItem(itemData, slot);
+        this.equippedItems.set(slot, newItem);
+    }
+
+    createEquippedItem(itemData, slot) {
+        const newItem = document.createElement('div');
+        newItem.className = 'item equipped';
+        newItem.textContent = itemData.emoji;
+        newItem.dataset.type = itemData.type;
+        newItem.style.top = slot.style.top;
+        newItem.style.left = slot.style.left;
+        
+        newItem.addEventListener('click', () => this.unequipItem(slot));
+        this.characterArea.appendChild(newItem);
+        return newItem;
+    }
+
+    unequipItem(slot) {
+        if (this.equippedItems.has(slot)) {
+            const item = this.equippedItems.get(slot);
+            const category = this.findCategoryForItem(item.dataset.type);
+            category.appendChild(item);
+            item.classList.remove('equipped');
+            item.style.position = '';
+            item.style.top = '';
+            item.style.left = '';
+            this.equippedItems.delete(slot);
+        }
+    }
+
+    findCategoryForItem(type) {
+        const categories = this.inventory.querySelectorAll('.category');
+        for (let category of categories) {
+            const matchingItem = Array.from(category.querySelectorAll('.item'))
+                .find(item => item.dataset.type === type);
+            if (matchingItem) return category;
+        }
+        return this.inventory; // Fallback
+    }
+
+    handleTooltip(e) {
+        const item = e.target.closest('.item');
+        if (!item || !item.dataset.tooltip) {
+            this.hideTooltip();
+            return;
+        }
+
+        this.tooltip.innerHTML = this.generateTooltipContent(item);
+        this.tooltip.style.opacity = '1';
+
+        const tooltipRect = this.tooltip.getBoundingClientRect();
+        let left = e.pageX + 10;
+        let top = e.pageY + 10;
+
+        if (left + tooltipRect.width > window.innerWidth) {
+            left = window.innerWidth - tooltipRect.width - 10;
+        }
+        if (top + tooltipRect.height > window.innerHeight) {
+            top = window.innerHeight - tooltipRect.height - 10;
+        }
+
+        this.tooltip.style.left = `${left}px`;
+        this.tooltip.style.top = `${top}px`;
+    }
+
+    generateTooltipContent(item) {
+        return `<div class="tooltip-title">${item.dataset.tooltip}</div>`;
+    }
+
+    hideTooltip() {
+        this.tooltip.style.opacity = '0';
+    }
+
+    highlightValidSlots(type) {
+        this.slots.forEach(slot => {
+            slot.classList.toggle('highlight', type ? slot.dataset.zone === type : false);
+        });
+    }
+
+    resetCharacter() {
+        this.equippedItems.forEach((item, slot) => {
+            const category = this.findCategoryForItem(item.dataset.type);
+            category.appendChild(item);
+            item.classList.remove('equipped');
+            item.style.position = '';
+            item.style.top = '';
+            item.style.left = '';
+        });
+        this.equippedItems.clear();
+    }
+
+    toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+    }
+
+    static initialize() {
+        return new CharacterConstructor();
+    }
+}
+
+// Initialize the Character Constructor when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', CharacterConstructor.initialize);
+
+</script>
+</body>
 </html>
