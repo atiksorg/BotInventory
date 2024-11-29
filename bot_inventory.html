@@ -27,11 +27,13 @@
                 display: flex;
                 gap: 30px;
                 max-width: 1200px;
+                min-width: 800px;
                 margin: 0 auto;
                 background-color: white;
                 padding: 20px;
                 border-radius: 10px;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                overflow-x: auto;
             }
 
             .inventory {
@@ -41,7 +43,7 @@
                 padding: 15px;
                 background-color: var(--secondary-color);
                 height: 600px;
-                overflow-y: auto;
+                overflow-y: auto; 
             }
 
             .character-area {
@@ -51,6 +53,7 @@
                 border-radius: 8px;
                 position: relative;
                 background: linear-gradient(to bottom, #e6f3ff, #ffffff);
+                
             }
 
             .item {
@@ -186,6 +189,9 @@
             body.dark-mode .category {
                 background-color: #4e4e4e;
             }
+            .item, .equipped {
+                transition: transform 0.2s, box-shadow 0.2s, top 0.3s, left 0.3s;
+            }
         </style><!-- /HEAD_BLOCK_2 -->
     </head>
     <body>
@@ -199,24 +205,45 @@
                 <button class="button" id="toggle-theme-btn">Toggle Theme</button>
             </div>
             
-            <div class="inventory" id="inventory">
-                <div class="category">
-                    <div class="category-title">Голова</div>
-                    <div class="item" draggable="true" data-type="head" data-tooltip="Шляпа">🎩</div>
-                    <div class="item" draggable="true" data-type="head" data-tooltip="Очки">👓</div>
-                    <div class="item" draggable="true" data-type="head" data-tooltip="Маска">😷</div>
-                </div>
-                <div class="category">
-                    <div class="category-title">Туловище</div>
-                    <div class="item" draggable="true" data-type="torso" data-tooltip="Рубашка">👕</div>
-                    <div class="item" draggable="true" data-type="torso" data-tooltip="Куртка">🧥</div>
-                </div>
-                <div class="category">
-                    <div class="category-title">Ноги</div>
-                    <div class="item" draggable="true" data-type="legs" data-tooltip="Штаны">👖</div>
-                    <div class="item" draggable="true" data-type="legs" data-tooltip="Обувь">👞</div>
-                </div>
-            </div><!-- /BODY_BLOCK_3 -->
+
+<div class="inventory" id="inventory">
+    <div class="category">
+        <div class="category-title">Голова</div>
+        <div class="item" draggable="true" data-type="head" data-tooltip="Шляпа">🎩</div>
+        <div class="item" draggable="true" data-type="head" data-tooltip="Очки">👓</div>
+        <div class="item" draggable="true" data-type="head" data-tooltip="Маска">😷</div>
+        <!-- Новые предметы -->
+        <div class="item" draggable="true" data-type="head" data-tooltip="Каска">⛑️</div>
+        <div class="item" draggable="true" data-type="head" data-tooltip="Кепка">🧢</div>
+        <div class="item" draggable="true" data-type="head" data-tooltip="Шлем">🪖</div>
+        <div class="item" draggable="true" data-type="head" data-tooltip="Корона">👑</div>
+        <div class="item" draggable="true" data-type="head" data-tooltip="Берет">🎓</div>
+    </div>
+    <div class="category">
+        <div class="category-title">Туловище</div>
+        <div class="item" draggable="true" data-type="torso" data-tooltip="Рубашка">👕</div>
+        <div class="item" draggable="true" data-type="torso" data-tooltip="Куртка">🧥</div>
+        <!-- Новые предметы -->
+        <div class="item" draggable="true" data-type="torso" data-tooltip="Пальто">🧥</div>
+        <div class="item" draggable="true" data-type="torso" data-tooltip="Свитер">🧶</div>
+        <div class="item" draggable="true" data-type="torso" data-tooltip="Футболка">👚</div>
+        <div class="item" draggable="true" data-type="torso" data-tooltip="Жилет">🦺</div>
+        <div class="item" draggable="true" data-type="torso" data-tooltip="Пиджак">🧥</div>
+    </div>
+    <div class="category">
+        <div class="category-title">Ноги</div>
+        <div class="item" draggable="true" data-type="legs" data-tooltip="Штаны">👖</div>
+        <div class="item" draggable="true" data-type="legs" data-tooltip="Обувь">👞</div>
+        <!-- Новые предметы -->
+        <div class="item" draggable="true" data-type="legs" data-tooltip="Ботинки">🥾</div>
+        <div class="item" draggable="true" data-type="legs" data-tooltip="Шорты">🩳</div>
+        <div class="item" draggable="true" data-type="legs" data-tooltip="Юбка">👗</div>
+        <div class="item" draggable="true" data-type="legs" data-tooltip="Сапоги">👢</div>
+        <div class="item" draggable="true" data-type="legs" data-tooltip="Кроссовки">👟</div>
+    </div>
+</div>
+            
+            <!-- /BODY_BLOCK_3 -->
         </div><!-- /BODY_BLOCK_1 -->
         <!-- BODY_BLOCK_4 --><script>
             class CharacterConstructor {
@@ -325,46 +352,42 @@
                 }
 
                 equipItem(type, slot) {
-                    const template = this.inventory.querySelector(`[data-type="${type}"]`);
-                    if (!template) return;
+    const template = this.inventory.querySelector(`[data-type="${type}"]`);
+    if (!template) return;
 
-                    if (this.equippedItems.has(slot)) {
-                        this.equippedItems.get(slot).remove();
-                    }
+    if (this.equippedItems.has(slot)) {
+        this.unequipItem(slot);
+    }
 
-                    const newItem = this.createEquippedItem(template, slot);
-                    this.equippedItems.set(slot, newItem);
-                    template.remove(); // Remove from inventory
-                }
+    const newItem = this.createEquippedItem(template, slot);
+    this.equippedItems.set(slot, newItem);
+    template.remove(); // Remove from inventory
+}
 
-                createEquippedItem(template, slot) {
-                    const newItem = template.cloneNode(true);
-                    newItem.classList.add('equipped');
-                    newItem.style.position = 'absolute';
-                    newItem.style.top = slot.style.top;
-                    newItem.style.left = slot.style.left;
-                    
-                    const removeBtn = document.createElement('button');
-                    removeBtn.className = 'remove-item';
-                    removeBtn.innerHTML = '×';
-                    removeBtn.onclick = () => this.unequipItem(slot);
-                    
-                    newItem.appendChild(removeBtn);
-                    this.characterArea.appendChild(newItem);
-                    return newItem;
-                }
+createEquippedItem(template, slot) {
+    const newItem = template.cloneNode(true);
+    newItem.classList.add('equipped');
+    newItem.style.position = 'absolute';
+    newItem.style.top = slot.style.top;
+    newItem.style.left = slot.style.left;
+    
+    newItem.addEventListener('click', () => this.unequipItem(slot));
 
-                unequipItem(slot) {
-                    if (this.equippedItems.has(slot)) {
-                        const item = this.equippedItems.get(slot);
-                        this.inventory.appendChild(item); // Return to inventory
-                        item.classList.remove('equipped');
-                        item.style.position = '';
-                        item.style.top = '';
-                        item.style.left = '';
-                        this.equippedItems.delete(slot);
-                    }
-                }
+    this.characterArea.appendChild(newItem);
+    return newItem;
+}
+
+unequipItem(slot) {
+    if (this.equippedItems.has(slot)) {
+        const item = this.equippedItems.get(slot);
+        this.inventory.appendChild(item); // Return to inventory
+        item.classList.remove('equipped');
+        item.style.position = '';
+        item.style.top = '';
+        item.style.left = '';
+        this.equippedItems.delete(slot);
+    }
+}
 
                 handleTooltip(e) {
                     const item = e.target.closest('.item');
