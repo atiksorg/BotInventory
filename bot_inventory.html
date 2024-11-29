@@ -203,6 +203,55 @@ body.dark-mode .character-area {
 body.dark-mode .category {
     background-color: #4e4e4e;
 }
+
+
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+body.dark-mode .modal {
+    background-color: rgba(0,0,0,0.8);
+}
+
+body.dark-mode .modal-content {
+    background-color: var(--dark-bg-secondary);
+    color: #f5f5f5;
+}
+
+
 </style>
 </head>
 <body>
@@ -218,6 +267,22 @@ body.dark-mode .category {
             <button class="button" id="reset-btn">Reset</button>
         </div>
     </div>
+    
+<div id="item-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Item Details</h3>
+        <input type="text" id="item-text" placeholder="Text input">
+        <select id="item-select">
+            <option value="option1">Option 1</option>
+            <option value="option2">Option 2</option>
+        </select>
+        <input type="checkbox" id="item-checkbox">
+        <label for="item-checkbox">Checkbox</label>
+        <textarea id="item-textarea" placeholder="Textarea"></textarea>
+        <button id="save-btn">Save</button>
+    </div>
+</div>
 
     <script>
 // inventory-data.js
@@ -333,10 +398,12 @@ class CharacterConstructor {
                 itemElement.dataset.tooltip = item.tooltip;
                 itemElement.textContent = item.emoji;
                 categoryElement.appendChild(itemElement);
+                itemElement.addEventListener('dblclick', this.showItemModal.bind(this, itemElement));
             });
 
             this.inventory.appendChild(categoryElement);
         });
+ 
     }
 
     generateSlots() {
@@ -351,6 +418,9 @@ class CharacterConstructor {
                 return slot;
             })
         );
+        
+        
+        
     }
 
     initializeEventListeners() {
@@ -501,10 +571,59 @@ class CharacterConstructor {
     static initialize() {
         return new CharacterConstructor();
     }
+    
+    
+    
+    showItemModal(item) {
+        this.hideTooltip();
+        const modal = document.getElementById('item-modal');
+        modal.style.display = 'block';
+        this.resetModal();
+    }
+
+    resetModal() {
+        document.getElementById('item-text').value = '';
+        document.getElementById('item-select').value = 'option1';
+        document.getElementById('item-checkbox').checked = false;
+        document.getElementById('item-textarea').value = '';
+    }
+    
+    
 }
 
 // Initialize the Character Constructor when the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', CharacterConstructor.initialize);
+
+document.querySelector('.close').addEventListener('click', () => {
+  document.getElementById('item-modal').style.display = 'none';
+});
+
+      document.getElementById('item-modal').addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) {
+          e.target.style.display = 'none';
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && document.getElementById('item-modal').style.display === 'block') {
+          document.getElementById('item-modal').style.display = 'none';
+        }
+      });
+
+      document.getElementById('save-btn').addEventListener('click', () => {
+        const text = document.getElementById('item-text').value;
+        const select = document.getElementById('item-select').value;
+        const checkbox = document.getElementById('item-checkbox').checked;
+        const textarea = document.getElementById('item-textarea').value;
+
+        // Handle the data as needed
+        console.log('Text:', text);
+        console.log('Select:', select);
+        console.log('Checkbox:', checkbox);
+        console.log('Textarea:', textarea);
+
+        document.getElementById('item-modal').style.display = 'none';
+      });
 
 </script>
 </body>
