@@ -22,8 +22,8 @@
     --dark-bg-border-light: #ccc;
 
     /* Size Variables */
-    --slot-size: 70px;
-    --item-size: 60px;
+    --slot-size: 80px;
+    --item-size: 70px;
 }
 
 /* Reset and Base Styles */
@@ -338,13 +338,51 @@ body.dark-mode .modal-footer {
 }
 
 body {
-    transition: background-color 0.5s, color 0.5s;
+    //transition: background-color 0.5s, color 0.5s;
 }
 
 .container, .inventory, .character-area, .item, .slot, .button {
-    transition: background-color 0.5s, border-color 0.5s, color 0.5s;
+    //transition: background-color 0.5s, border-color 0.5s, color 0.5s;
 }
 
+.code-block {
+	text-align:center;
+}
+
+.code-block .code-value {
+	font-size:11px;
+    font-weight: 700;
+}
+
+.code-block .code-name {
+	font-size:8px;
+}
+
+
+.inventory-type-head .item, .item.equipped.inventory-type-head {
+    background-color: #c6cbce;
+}
+
+.inventory-type-torso .item, .item.equipped.inventory-type-torso {
+    background-color: #e2d4e2;
+}
+
+.inventory-type-legs .item, .item.equipped.inventory-type-legs {
+    background-color: #e4efdd;
+}
+
+
+body.dark-mode .inventory-type-head .item, body.dark-mode .item.equipped.inventory-type-head {
+    background-color: #263238;
+}
+
+body.dark-mode .inventory-type-torso .item, body.dark-mode .item.equipped.inventory-type-torso {
+    background-color: #3b263c;
+}
+
+body.dark-mode .inventory-type-legs .item, body.dark-mode .item.equipped.inventory-type-legs {
+    background-color: #2e3b26;
+}
 
 </style>
 </head>
@@ -391,45 +429,401 @@ body {
 </div>
 
     <script>
-// inventory-data.js
+    
+const categoryTypeInfo = {
+    head: 'Мозг, обработка информации, и системными настройки.',
+    torso: 'Коммуникация, интеграции, и пользовательскими настройками.',
+    legs: 'Платежами, временные настройки, и данные.',
+}
+
 const inventoryData = [
-    {
-        category: 'Голова',
-        items: [
-            { emoji: '🎩', type: 'head', tooltip: 'Шляпа' },
-            { emoji: '👓', type: 'head', tooltip: 'Очки' },
-            { emoji: '😷', type: 'head', tooltip: 'Маска' },
-            { emoji: '⛑️', type: 'head', tooltip: 'Каска' },
-            { emoji: '🧢', type: 'head', tooltip: 'Кепка' },
-            { emoji: '🪖', type: 'head', tooltip: 'Шлем' },
-            { emoji: '👑', type: 'head', tooltip: 'Корона' },
-            { emoji: '🎓', type: 'head', tooltip: 'Берет' }
-        ]
-    },
-    {
-        category: 'Туловище',
-        items: [
-            { emoji: '👕', type: 'torso', tooltip: 'Рубашка' },
-            { emoji: '🧥', type: 'torso', tooltip: 'Куртка' },
-            { emoji: '🧥', type: 'torso', tooltip: 'Пальто' },
-            { emoji: '🧶', type: 'torso', tooltip: 'Свитер' },
-            { emoji: '👚', type: 'torso', tooltip: 'Футболка' },
-            { emoji: '🦺', type: 'torso', tooltip: 'Жилет' },
-            { emoji: '🧥', type: 'torso', tooltip: 'Пиджак' }
-        ]
-    },
-    {
-        category: 'Ноги',
-        items: [
-            { emoji: '👖', type: 'legs', tooltip: 'Штаны' },
-            { emoji: '👞', type: 'legs', tooltip: 'Обувь' },
-            { emoji: '🥾', type: 'legs', tooltip: 'Ботинки' },
-            { emoji: '🩳', type: 'legs', tooltip: 'Шорты' },
-            { emoji: '👗', type: 'legs', tooltip: 'Юбка' },
-            { emoji: '👢', type: 'legs', tooltip: 'Сапоги' },
-            { emoji: '👟', type: 'legs', tooltip: 'Кроссовки' }
-        ]
-    }
+  {
+    "category": "Голова",
+    "type": "head",
+    "items": [
+      {
+        "emoji": "🛠️",
+        "type": "head",
+        "value": "SYDB",
+        "name": "Режим отладки",
+        "tooltip": "Режим отладки",
+        "fieldType": "checkbox"
+      },
+      {
+        "emoji": "📊",
+        "type": "head",
+        "value": "SYLG",
+        "name": "Журнал сообщений",
+        "tooltip": "Журнал сообщений",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "⚖️",
+        "type": "head",
+        "value": "SYWT",
+        "name": "Вес",
+        "tooltip": "Вес",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🧮",
+        "type": "head",
+        "value": "SYGM",
+        "name": "Память графа",
+        "tooltip": "Память графа",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🔄",
+        "type": "head",
+        "value": "SYKT",
+        "name": "Сохранить поток",
+        "tooltip": "Сохранить поток",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🏷️",
+        "type": "head",
+        "value": "SYTG",
+        "name": "Теги",
+        "tooltip": "Теги",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🧠",
+        "type": "head",
+        "value": "AIMD",
+        "name": "LLM модель",
+        "tooltip": "LLM модель",
+        "fieldType": "select",
+        "preinstall": true
+      },
+      {
+        "emoji": "⚗️",
+        "type": "head",
+        "value": "AIFT",
+        "name": "Модель тонкой настройки",
+        "tooltip": "Модель тонкой настройки",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🌐",
+        "type": "head",
+        "value": "AIWB",
+        "name": "Интернет помощника",
+        "tooltip": "Интернет помощника",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🤖",
+        "type": "head",
+        "value": "AIAS",
+        "name": "Ассистенты",
+        "tooltip": "Ассистенты",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "👨‍⚖️",
+        "type": "head",
+        "value": "AIMP",
+        "name": "Промт модератора",
+        "tooltip": "Промт модератора",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "📂",
+        "type": "head",
+        "value": "AIAF",
+        "name": "Файлы помощника",
+        "tooltip": "Файлы помощника",
+        "fieldType": "text"
+      }
+    ]
+  },
+  {
+    "category": "Туловище",
+    "type": "torso",
+    "items": [
+      {
+        "emoji": "📡",
+        "type": "torso",
+        "value": "CMCH",
+        "name": "Канал",
+        "tooltip": "Канал",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🔐",
+        "type": "torso",
+        "value": "CMTK",
+        "name": "Токен бота",
+        "tooltip": "Токен бота",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🤖",
+        "type": "torso",
+        "value": "CMTN",
+        "name": "Имя бота",
+        "tooltip": "Имя бота",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "📑",
+        "type": "torso",
+        "value": "CMTM",
+        "name": "Меню бота",
+        "tooltip": "Меню бота",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "📬",
+        "type": "torso",
+        "value": "CMTS",
+        "name": "Подписка",
+        "tooltip": "Подписка",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🌍",
+        "type": "torso",
+        "value": "CMTL",
+        "name": "Локализация",
+        "tooltip": "Локализация",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🎧",
+        "type": "torso",
+        "value": "EXEL",
+        "name": "ElevenLabs",
+        "tooltip": "ElevenLabs",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🔌",
+        "type": "torso",
+        "value": "EXCZ",
+        "name": "Coze API",
+        "tooltip": "Coze API",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "⚡",
+        "type": "torso",
+        "value": "EXGQ",
+        "name": "Groq API",
+        "tooltip": "Groq API",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🔍",
+        "type": "torso",
+        "value": "EXDS",
+        "name": "DeepSeek API",
+        "tooltip": "DeepSeek API",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "📥",
+        "type": "torso",
+        "value": "EXWI",
+        "name": "WHAPI вход",
+        "tooltip": "WHAPI вход",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "📤",
+        "type": "torso",
+        "value": "EXWO",
+        "name": "WHAPI выход",
+        "tooltip": "WHAPI выход",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "✉️",
+        "type": "torso",
+        "value": "USTX",
+        "name": "Скрытое сообщение",
+        "tooltip": "Скрытое сообщение",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "💎",
+        "type": "torso",
+        "value": "USTL",
+        "name": "Лимит токенов",
+        "tooltip": "Лимит токенов",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "📝",
+        "type": "torso",
+        "value": "USML",
+        "name": "Лимит сообщений",
+        "tooltip": "Лимит сообщений",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "📅",
+        "type": "torso",
+        "value": "USDS",
+        "name": "Доля дней",
+        "tooltip": "Доля дней",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🎫",
+        "type": "torso",
+        "value": "USTS",
+        "name": "Доля токенов",
+        "tooltip": "Доля токенов",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "⚠️",
+        "type": "torso",
+        "value": "USPW",
+        "name": "Предупреждение периода",
+        "tooltip": "Предупреждение периода",
+        "fieldType": "text"
+      }
+    ]
+  },
+  {
+    "category": "Ноги",
+    "type": "legs",
+    "items": [
+      {
+        "emoji": "💳",
+        "type": "legs",
+        "value": "PAMD",
+        "name": "Режим платежей",
+        "tooltip": "Режим платежей",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "💰",
+        "type": "legs",
+        "value": "PARS",
+        "name": "Сумма платежа",
+        "tooltip": "Сумма платежа",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🏦",
+        "type": "legs",
+        "value": "PARB",
+        "name": "Робокасса",
+        "tooltip": "Робокасса",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "📆",
+        "type": "legs",
+        "value": "PARP",
+        "name": "Период платежа",
+        "tooltip": "Период платежа",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🛍️",
+        "type": "legs",
+        "value": "PATB",
+        "name": "Покупка токенов",
+        "tooltip": "Покупка токенов",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "💵",
+        "type": "legs",
+        "value": "PATC",
+        "name": "Стоимость токенов",
+        "tooltip": "Стоимость токенов",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "⏲️",
+        "type": "legs",
+        "value": "TMAD",
+        "name": "Задержка накопления",
+        "tooltip": "Задержка накопления",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "⚠️",
+        "type": "legs",
+        "value": "TMWW",
+        "name": "Предупреждение времени",
+        "tooltip": "Предупреждение времени",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🕒",
+        "type": "legs",
+        "value": "TMON",
+        "name": "Время включения",
+        "tooltip": "Время включения",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🕛",
+        "type": "legs",
+        "value": "TMOF",
+        "name": "Время выключения",
+        "tooltip": "Время выключения",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "⌛",
+        "type": "legs",
+        "value": "TMWT",
+        "name": "Таймаут ожидания",
+        "tooltip": "Таймаут ожидания",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🧩",
+        "type": "legs",
+        "value": "DTEB",
+        "name": "Блоки встраивания",
+        "tooltip": "Блоки встраивания",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "📄",
+        "type": "legs",
+        "value": "DTEP",
+        "name": "Простые встраивания",
+        "tooltip": "Простые встраивания",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "📋",
+        "type": "legs",
+        "value": "DTCL",
+        "name": "Список клиентов",
+        "tooltip": "Список клиентов",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "📦",
+        "type": "legs",
+        "value": "DTWB",
+        "name": "Товары WB",
+        "tooltip": "Товары WB",
+        "fieldType": "text"
+      },
+      {
+        "emoji": "🔖",
+        "type": "legs",
+        "value": "DTTN",
+        "name": "Имя тега",
+        "tooltip": "Имя тега",
+        "fieldType": "text"
+      }
+    ]
+  }
 ];
 
 // slot-config.js
@@ -438,29 +832,31 @@ const slotConfig = [
         zone: 'head', 
         positions: [
             { id: 'head-1', top: '5%', left: '4%' },
-            { id: 'head-2', top: '5%', left: '23%' },
-            { id: 'head-3', top: '5%', left: '60%' },
-            { id: 'head-4', top: '5%', left: '80%' },
+            { id: 'head-2', top: '5%', left: '25%' },
+            { id: 'head-3', top: '5%', left: '57%' },
+            { id: 'head-4', top: '5%', left: '78%' },
         ]
     },
     { 
         zone: 'torso', 
         positions: [
-            { id: 'torso-1', top: '25%', left: '10%' },
-            { id: 'torso-2', top: '25%', left: '75%' },
-            { id: 'torso-3', top: '40%', left: '10%' },
-            { id: 'torso-4', top: '40%', left: '75%' },
-            { id: 'torso-5', top: '55%', left: '10%' },
-            { id: 'torso-6', top: '55%', left: '75%' },
+            { id: 'torso-1', top: '21%', left: '10%' },
+            { id: 'torso-2', top: '21%', left: '72%' },
+            { id: 'torso-3', top: '36%', left: '10%' },
+            { id: 'torso-4', top: '36%', left: '72%' },
+            { id: 'torso-5', top: '51%', left: '10%' },
+            { id: 'torso-6', top: '51%', left: '72%' },
+            { id: 'torso-7', top: '66%', left: '10%' },
+            { id: 'torso-8', top: '66%', left: '72%' },
         ]
     },
     { 
         zone: 'legs', 
         positions: [
             { id: 'legs-1', bottom: '5%', left: '4%' },
-            { id: 'legs-2', bottom: '5%', left: '23%' },
-            { id: 'legs-3', bottom: '5%', left: '60%' },
-            { id: 'legs-4', bottom: '5%', left: '80%' }
+            { id: 'legs-2', bottom: '5%', left: '25%' },
+            { id: 'legs-3', bottom: '5%', left: '57%' },
+            { id: 'legs-4', bottom: '5%', left: '78%' }
         ]
     }
 ];
@@ -472,6 +868,7 @@ class CharacterConstructor {
         this.generateSlots();
         this.populateInventory();
         this.initializeEventListeners();
+        this.preinstallItems();
     }
 
     initializeDOM() {
@@ -494,22 +891,47 @@ class CharacterConstructor {
     populateInventory() {
         inventoryData.forEach(category => {
             const categoryElement = document.createElement('div');
-            categoryElement.className = 'category';
+            //categoryElement.className = 'category';
+            categoryElement.className = `category inventory-type-${category.type}`;
 
             const titleElement = document.createElement('div');
             titleElement.className = 'category-title';
             titleElement.textContent = category.category;
             titleElement.draggable = false;
+            titleElement.dataset.tooltip = categoryTypeInfo[category.type];
             categoryElement.appendChild(titleElement);
 
             category.items.forEach(item => {
                 const itemElement = document.createElement('div');
                 itemElement.className = 'item';
-                itemElement.draggable = true;
+                itemElement.draggable = !item.preinstall;
                 itemElement.dataset.type = item.type;
                 itemElement.dataset.tooltip = item.tooltip;
-                itemElement.textContent = item.emoji;
+                itemElement.dataset.fieldType = item.fieldType;
+                
+                itemElement.style.backgroundColor = category.color;
+                
+                const codeBlock = document.createElement('div');
+                codeBlock.className = 'code-block';
+
+                const codeEmoji = document.createElement('div');
+                codeEmoji.className = 'code-emoji';
+                codeEmoji.textContent = item.emoji;
+
+                const codeValue = document.createElement('div');
+                codeValue.className = 'code-value';
+                codeValue.textContent = item.value;
+
+                const codeName = document.createElement('div');
+                codeName.className = 'code-name';
+                codeName.textContent = item.name;
+
+                codeBlock.appendChild(codeEmoji);
+                codeBlock.appendChild(codeValue);
+                codeBlock.appendChild(codeName);
+                itemElement.appendChild(codeBlock);
                 categoryElement.appendChild(itemElement);
+
                 itemElement.addEventListener('dblclick', this.showItemModal.bind(this, itemElement));
             });
 
@@ -558,6 +980,20 @@ class CharacterConstructor {
     }
     
     
+    preinstallItems() {
+      inventoryData.forEach(category => {
+        category.items.forEach(item => {
+          if (item.preinstall) {
+            const slot = this.slots.find(slot => slot.dataset.zone === item.type && !this.equippedItems.has(slot.dataset.id));
+            if (slot) {
+              this.equipItem(item, slot);
+            }
+          }
+        });
+      });
+    }
+    
+    
     deleteItem(equippedItem) {
         const slotId = equippedItem.slotId;
         const equippedData = this.equippedItems.get(slotId);
@@ -575,8 +1011,11 @@ class CharacterConstructor {
         if (item) {
             e.dataTransfer.setData('text/plain', JSON.stringify({
                 type: item.dataset.type,
-                emoji: item.textContent,
-                tooltip: item.dataset.tooltip
+                emoji: item.querySelector('.code-emoji').textContent,
+                value: item.querySelector('.code-value').textContent,
+                name: item.querySelector('.code-name').textContent,
+                tooltip: item.dataset.tooltip,
+                fieldType: item.dataset.fieldType // Добавляем тип поля
             }));
             item.style.opacity = '0.5'; // Добавляем эффект полупрозрачности
             this.highlightValidSlots(item.dataset.type);
@@ -620,24 +1059,58 @@ class CharacterConstructor {
 
         const newItem = this.createEquippedItem(itemData, slot);
         newItem.slotId = slot.dataset.id;
+        newItem.dataset.fieldType = itemData.fieldType;
         newItem.addEventListener('click', () => this.showItemModal(newItem));
         this.equippedItems.set(slot.dataset.id, { newItem: newItem });
     }
-
+    
     createEquippedItem(itemData, slot) {
         const newItem = document.createElement('div');
-        newItem.className = 'item equipped';
-        newItem.textContent = itemData.emoji;
+        newItem.className = `item equipped inventory-type-${itemData.type}`;
+        //newItem.className = 'item equipped';
+        newItem.draggable = !itemData.preinstall;
+        newItem.dataset.preinstall = itemData.preinstall !== undefined ? itemData.preinstall : false; 
         newItem.dataset.type = itemData.type;
         newItem.dataset.tooltip = itemData.tooltip;
-        //newItem.style.top = slot.style.top;
+        newItem.dataset.fieldType = itemData.fieldType;
+        newItem.style.opacity = 1;
+
         if (slot.style.top) {
-          newItem.style.top = slot.style.top;
+            newItem.style.top = slot.style.top;
         } else if (slot.style.bottom) {
-          newItem.style.bottom = slot.style.bottom;
+            newItem.style.bottom = slot.style.bottom;
         }
         newItem.style.left = slot.style.left;
-        newItem.slot = slot; // Set the slot reference on the newItem
+        newItem.slot = slot;
+        
+        const category = inventoryData.find(cat => cat.type === itemData.type);
+        if (category && category.color) {
+            newItem.style.backgroundColor = category.color;
+        }
+
+        const codeBlock = document.createElement('div');
+        codeBlock.className = 'code-block';
+
+        const codeEmoji = document.createElement('div');
+        codeEmoji.className = 'code-emoji';
+        codeEmoji.textContent = itemData.emoji;
+
+        const codeValue = document.createElement('div');
+        codeValue.className = 'code-value';
+        codeValue.textContent = itemData.value;
+
+        const codeName = document.createElement('div');
+        codeName.className = 'code-name';
+        codeName.textContent = itemData.name;
+
+        // Append nested elements to codeBlock
+        codeBlock.appendChild(codeEmoji);
+        codeBlock.appendChild(codeValue);
+        codeBlock.appendChild(codeName);
+
+        // Append codeBlock to newItem
+        newItem.appendChild(codeBlock);
+
         this.characterArea.appendChild(newItem);
         console.log('Created equipped item:', newItem, 'in slot:', slot); // Отладочное сообщение
         return newItem;
@@ -652,6 +1125,7 @@ class CharacterConstructor {
         }
         return this.inventory; // Fallback
     }
+    
 
     generateTooltipContent(item) {
     	console.log(item.dataset.tooltip);
@@ -671,7 +1145,9 @@ class CharacterConstructor {
     resetCharacter() {
         this.equippedItems.forEach((itemData, slotId) => {
             const item = itemData.newItem;
-            item.remove(); // Удаляем предмет из персонажа
+            if (item.dataset.preinstall !== 'true') { // Check if preinstall is not true
+                item.remove();
+            }
         });
         this.equippedItems.clear();
         this.slots.forEach(slot => slot.classList.remove('highlight'));
@@ -692,28 +1168,61 @@ class CharacterConstructor {
         return new CharacterConstructor();
     }
 
-    showItemModal(equippedItem) {
+   
+   showItemModal(equippedItem) {
         this.hideTooltip();
         const modal = new bootstrap.Modal(document.getElementById('item-modal'));
         modal.show();
-        this.resetModal();
+        //this.resetModal();
         this.currentEquippedItem = equippedItem;
 
         // Set the modal title to the item's tooltip
         const modalTitle = document.getElementById('exampleModalLabel');
         modalTitle.textContent = equippedItem.dataset.tooltip;
+
+        // Set the modal content based on the field type
+        const modalBody = document.querySelector('.modal-body');
+        modalBody.innerHTML = ''; // Clear previous content
+
+        const fieldType = equippedItem.dataset.fieldType;
+        switch (fieldType) {
+            case 'text':
+                modalBody.innerHTML = `<input type="text" class="form-control mb-3" id="item-text" placeholder="Введите текст">`;
+                break;
+            case 'select':
+                modalBody.innerHTML = `
+                    <select class="form-select mb-3" id="item-select">
+                        <option value="option1">Опция 1</option>
+                        <option value="option2">Опция 2</option>
+                    </select>`;
+                break;
+            case 'checkbox':
+                modalBody.innerHTML = `
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="item-checkbox">
+                        <label class="form-check-label" for="item-checkbox">Чекбокс</label>
+                    </div>`;
+                break;
+            case 'textarea':
+                modalBody.innerHTML = `<textarea class="form-control mb-3" id="item-textarea" placeholder="Введите текст"></textarea>`;
+                break;
+            default:
+                modalBody.innerHTML = `<p>Неизвестный тип поля</p>`;
+        }
+
+        const deleteButton = document.getElementById('delete-btn');
+        if (equippedItem.dataset.preinstall === 'true') {
+            deleteButton.style.display = 'none';
+        } else {
+            deleteButton.style.display = 'inline-block';
+        }
     }
+   
     
     generateTooltipContent(item) {
         return `<div class="tooltip-title">${item.dataset.tooltip}</div>`;
     }
 
-    resetModal() {
-        document.getElementById('item-text').value = '';
-        document.getElementById('item-select').value = 'option1';
-        document.getElementById('item-checkbox').checked = false;
-        document.getElementById('item-textarea').value = '';
-    }
 }
 
 // Initialize the Character Constructor when the DOM is fully loaded
