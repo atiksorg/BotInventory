@@ -281,7 +281,7 @@ body.dark-mode .modal-content {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="save-btn">Save</button>
+                <button type="button" class="btn btn-primary" id="save-btn" data-bs-dismiss="modal">Save</button>
                 <button type="button" class="btn btn-danger" id="delete-btn" data-bs-dismiss="modal">Delete</button>
             </div>
         </div>
@@ -376,6 +376,9 @@ class CharacterConstructor {
         this.toggleThemeBtn = document.getElementById('toggle-theme-btn');
         this.resetBtn = document.getElementById('reset-btn');
         this.equippedItems = new Map();
+
+        // Включаем темную тему по умолчанию
+        document.body.classList.add('dark-mode');
     }
 
     createTooltip() {
@@ -441,6 +444,11 @@ class CharacterConstructor {
                 this.currentEquippedItem = null;
             } else {
                 console.log('No current equipped item to delete');
+            }
+        });
+        this.resetBtn.addEventListener('click', () => {
+            if (confirm('Вы уверены, что хотите сбросить все предметы?')) {
+                this.resetCharacter();
             }
         });
     }
@@ -566,15 +574,12 @@ class CharacterConstructor {
     }
 
     resetCharacter() {
-        this.equippedItems.forEach((item, slot) => {
-            const category = this.findCategoryForItem(item.dataset.type);
-            category.appendChild(item);
-            item.classList.remove('equipped');
-            item.style.position = '';
-            item.style.top = '';
-            item.style.left = '';
+        this.equippedItems.forEach((itemData, slotId) => {
+            const item = itemData.newItem;
+            item.remove(); // Удаляем предмет из персонажа
         });
         this.equippedItems.clear();
+        this.slots.forEach(slot => slot.classList.remove('highlight'));
     }
 
     toggleTheme() {
