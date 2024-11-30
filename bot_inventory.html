@@ -31,6 +31,13 @@
             padding: 20px;
             transition: background-color 0.3s, color 0.3s;
         }
+        
+        .outer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
         .container {
             display: flex;
@@ -50,8 +57,8 @@
             border: 2px solid var(--border-color);
             border-radius: 8px;
             position: relative;
-            background: linear-gradient(to bottom, #e6f3ff, #ffffff);
-            background-image: url('https://wl.atiks.org/wp-content/uploads/2024/11/bot_inventory.png');
+            background: url('https://wl.atiks.org/wp-content/uploads/2024/11/bot_inventory.png');
+            background-color: #f5f5f5;
             background-size: cover;
             background-position: center;
             overflow: hidden;
@@ -86,7 +93,7 @@
 
         .category {
             margin-bottom: 25px;
-            background-color: white;
+            background-color: #e7e7e7;
             padding: 10px;
             border-radius: 8px;
         }
@@ -147,11 +154,19 @@
             border-color: var(--primary-color);
         }
 
-        .controls {
+        .controls-- {
             position: absolute;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
             display: flex;
             gap: 10px;
         }
@@ -221,7 +236,7 @@
         }
 
         body.dark-mode .character-area {
-            background: linear-gradient(to bottom, #3e3e3e, #2e2e2e);
+            //background: linear-gradient(to bottom, #3e3e3e, #2e2e2e);
             background-image: url('https://wl.atiks.org/wp-content/uploads/2024/11/bot_inventory.png');
             background-size: cover;
             background-position: center;
@@ -354,6 +369,7 @@
     </style>
 </head>
 <body>
+  <div class="outer-container">
     <div class="container">
         <div class="character-area" id="character-area"></div>
         <div class="inventory" id="inventory"></div>
@@ -389,6 +405,7 @@
             </div>
         </div>
     </div>
+  </div>
     <script>
         const categoryTypeInfo = {
             head: 'Мозг, обработка информации, и системными настройки.',
