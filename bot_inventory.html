@@ -8,10 +8,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
 :root {
     /* Color Variables */
-    --primary-color: #4a90e2;
+    --primary-color: #999;
     --secondary-color: #f5f5f5;
     --border-color: #ddd;
     --dark-bg-primary: #2e2e2e;
@@ -57,6 +59,10 @@ body {
     border-radius: 8px;
     position: relative;
     background: linear-gradient(to bottom, #e6f3ff, #ffffff);
+    background-image: url('https://wl.atiks.org/wp-content/uploads/2024/11/bot_inventory.png');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
 }
 
 .inventory {
@@ -203,6 +209,10 @@ body.dark-mode .button {
 
 body.dark-mode .character-area {
     background: linear-gradient(to bottom, #3e3e3e, #2e2e2e);
+    background-image: url('https://wl.atiks.org/wp-content/uploads/2024/11/bot_inventory.png');
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
 }
 
 body.dark-mode .category {
@@ -255,8 +265,8 @@ body.dark-mode .modal-content {
         </div>
         
         <div class="controls">
-            <button class="button" id="toggle-theme-btn">Toggle Theme</button>
-            <button class="button" id="reset-btn">Reset</button>
+            <button class="button" id="toggle-theme-btn"><i class="fas fa-sun"></i></button>
+        <button class="button" id="reset-btn"><i class="fas fa-undo"></i></button>
         </div>
     </div>
     
@@ -335,31 +345,33 @@ const slotConfig = [
     { 
         zone: 'head', 
         positions: [
-            { id: 'head-1', top: '5%', left: '20%' },
-            { id: 'head-2', top: '5%', left: '50%' },
-            { id: 'head-3', top: '5%', left: '80%' }
+            { id: 'head-1', top: '5%', left: '4%' },
+            { id: 'head-2', top: '5%', left: '23%' },
+            { id: 'head-3', top: '5%', left: '60%' },
+            { id: 'head-4', top: '5%', left: '80%' },
         ]
     },
     { 
         zone: 'torso', 
         positions: [
-            { id: 'torso-1', top: '30%', left: '10%' },
-            { id: 'torso-2', top: '30%', left: '30%' },
-            { id: 'torso-3', top: '30%', left: '50%' },
-            { id: 'torso-4', top: '30%', left: '70%' },
-            { id: 'torso-5', top: '45%', left: '30%' },
-            { id: 'torso-6', top: '45%', left: '50%' }
+            { id: 'torso-1', top: '25%', left: '10%' },
+            { id: 'torso-3', top: '25%', left: '75%' },
+            { id: 'torso-5', top: '40%', left: '10%' },
+            { id: 'torso-7', top: '40%', left: '75%' },
+            { id: 'torso-9', top: '55%', left: '10%' },
+            { id: 'torso-11', top: '55%', left: '75%' },
         ]
     },
     { 
         zone: 'legs', 
         positions: [
-            { id: 'legs-1', top: '60%', left: '40%' },
-            { id: 'legs-2', top: '60%', left: '60%' }
+            { id: 'legs-1', bottom: '5%', left: '4%' },
+            { id: 'legs-2', bottom: '5%', left: '23%' },
+            { id: 'legs-3', bottom: '5%', left: '60%' },
+            { id: 'legs-4', bottom: '5%', left: '80%' }
         ]
     }
 ];
-
 
 class CharacterConstructor {
     constructor() {
@@ -415,17 +427,18 @@ class CharacterConstructor {
 
     generateSlots() {
         this.slots = slotConfig.flatMap(config => 
-          config.positions.map(pos => {
-              const slot = document.createElement('div');
-              slot.className = 'slot';
-              slot.dataset.zone = config.zone;
-              slot.dataset.id = pos.id; // Use the unique ID
-              slot.style.top = pos.top;
-              slot.style.left = pos.left;
-              this.characterArea.appendChild(slot);
-              return slot;
-          })
-      );
+            config.positions.map(pos => {
+                const slot = document.createElement('div');
+                slot.className = 'slot';
+                slot.dataset.zone = config.zone;
+                slot.dataset.id = pos.id; // Use the unique ID
+                slot.style.top = pos.bottom ? '' : pos.top; // Use top if bottom is not present
+                slot.style.bottom = pos.bottom ? pos.bottom : ''; // Use bottom if present
+                slot.style.left = pos.left;
+                this.characterArea.appendChild(slot);
+                return slot;
+            })
+        );
     }
 
     initializeEventListeners() {
@@ -583,8 +596,15 @@ class CharacterConstructor {
     }
 
     toggleTheme() {
-        document.body.classList.toggle('dark-mode');
-    }
+        const body = document.body;
+        const toggleBtn = document.getElementById('toggle-theme-btn');
+        const isDarkMode = body.classList.toggle('dark-mode');
+        if (isDarkMode) {
+          toggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+        } else {
+          toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+        }
+      }
 
     static initialize() {
         return new CharacterConstructor();
