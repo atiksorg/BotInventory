@@ -3,1303 +3,1223 @@
 <head>
     <meta charset="UTF-8">
     <title>Character Constructor</title>
-    <head>
-  
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
     <style>
-:root {
-    /* Color Variables */
-    --primary-color: #999;
-    --secondary-color: #f5f5f5;
-    --border-color: #ddd;
-    --dark-bg-primary: #343a40;
-    --dark-bg-secondary: #424E5B;
-    --dark-bg-border: #6c757d;
-    --dark-bg-border-light: #ccc;
-
-    /* Size Variables */
-    --slot-size: 80px;
-    --item-size: 70px;
-}
-
-/* Reset and Base Styles */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5;
-    padding: 20px;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-/* Layout */
-.container {
-    display: flex;
-    gap: 30px;
-    max-width: 1200px;
-    min-width: 800px;
-    margin: 0 auto;
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    //box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    overflow-x: auto;
-}
-
-.character-area {
-    width: 500px;
-    height: 600px;
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    position: relative;
-    background: linear-gradient(to bottom, #e6f3ff, #ffffff);
-    background-image: url('https://wl.atiks.org/wp-content/uploads/2024/11/bot_inventory.png');
-    background-size: cover;
-    background-position: center;
-    overflow: hidden;
-}
-
-.inventory {
-    width: 350px;
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    padding: 15px;
-    background-color: var(--secondary-color);
-    height: 600px;
-    overflow-y: auto; 
-}
-
-/* Стилизация полосы прокрутки */
-.inventory::-webkit-scrollbar {
-    width: 4px;
-}
-
-.inventory::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-.inventory::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 2px;
-}
-
-.inventory::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
-/* Inventory Categories */
-.category {
-    margin-bottom: 25px;
-    background-color: white;
-    padding: 10px;
-    border-radius: 8px;
-}
-
-.category-title {
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: var(--primary-color);
-    padding-bottom: 5px;
-    border-bottom: 2px solid var(--border-color);
-}
-
-/* Items and Slots */
-.item {
-    width: var(--item-size);
-    height: var(--item-size);
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    margin: 5px;
-    background-color: white;
-    cursor: move;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s, box-shadow 0.2s;
-    user-select: none;
-}
-
-.slot {
-    width: var(--slot-size);
-    height: var(--slot-size);
-    border: 2px dashed var(--border-color);
-    border-radius: 8px;
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(255,255,255,0.2);
-    transition: background-color 0.3s;
-}
-
-.equipped {
-    position: absolute;
-    z-index: 2;
-    transition: all 0.3s ease;
-}
-
-/* Interactive States */
-.item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-.item:active {
-    transform: scale(0.95);
-}
-
-.slot.highlight {
-    background-color: rgba(255, 255, 255, 0.5);
-    border-color: var(--primary-color);
-}
-
-/* Controls */
-.controls {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-}
-
-.button {
-    padding: 8px 16px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.button:hover {
-    background-color: #357abd;
-}
-
-/* Tooltip */
-.tooltip {
-    position: absolute;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-    z-index: 1000;
-    background-color: #333;
-    color: #fff;
-    padding: 5px;
-    border-radius: 3px;
-    font-size: 14px;
-}
-
-
-/* Dark Mode */
-body.dark-mode {
-    background-color: var(--dark-bg-primary);
-    color: #f5f5f5;
-}
-
-body.dark-mode .container {
-    background-color: var(--dark-bg-primary);
-}
-
-body.dark-mode .inventory, 
-body.dark-mode .character-area {
-    background-color: var(--dark-bg-secondary);
-    border-color: var(--dark-bg-border);
-}
-
-body.dark-mode .item {
-    background-color: var(--dark-bg-secondary);
-    border: 2px solid var(--dark-bg-border);
-}
-
-body.dark-mode .slot {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 2px dashed rgba(255,255,255,0.2);
-}
-
-body.dark-mode .slot.highlight {
-    border-color: var(--dark-bg-border-light);
-}
-
-body.dark-mode .button {
-    background-color: var(--dark-bg-primary);
-}
-
-body.dark-mode .btn-close {
-    background-color: var(--dark-bg-border);
-}
-
-body.dark-mode .character-area {
-    background: linear-gradient(to bottom, #3e3e3e, #2e2e2e);
-    background-image: url('https://wl.atiks.org/wp-content/uploads/2024/11/bot_inventory.png');
-    background-size: cover;
-    background-position: center;
-    overflow: hidden;
-}
-
-body.dark-mode .category {
-    background-color: var(--dark-bg-secondary);
-}
-
-body.dark-mode .category-title {
-    border-bottom: 2px solid var(--dark-bg-border);
-}
-
-
-
-
-.modal-content {
-    background-color: white;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.modal-content input,
-.modal-content select,
-.modal-content textarea {
-    font-size:1.0rem;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-body.dark-mode .modal {
-    background-color: rgba(0,0,0,0.8);
-}
-
-body.dark-mode .modal-content {
-    background-color: var(--dark-bg-secondary);
-    color: #f5f5f5;
-}
-
-body.dark-mode .modal-content input,
-body.dark-mode .modal-content select,
-body.dark-mode .modal-content textarea {
-    background-color: var(--dark-bg-secondary);
-    color: #f5f5f5;
-    border: 1px solid var(--dark-bg-border);
-}
-
-body.dark-mode .modal-content input::placeholder,
-body.dark-mode .modal-content textarea::placeholder {
-    color: #999; /* Light gray for better readability */
-}
-
-body.dark-mode .modal-content label {
-    color: #f5f5f5;
-}
-
-body.dark-mode .modal-content .btn {
-    color: #fff;
-    /* Adjust background colors as necessary */
-}
-
-body.dark-mode .modal-content .btn-close {
-    color: #ccc;
-}
-
-body.dark-mode .modal-header {
-    border-bottom: var(--bs-modal-header-border-width) solid var(--dark-bg-border);
-}
-
-body.dark-mode .modal-footer {
-    border-top: var(--bs-modal-footer-border-width) solid var(--dark-bg-border);
-}
-
-.item {
-    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
-}
-
-.slot.highlight {
-    transition: background-color 0.3s, border-color 0.3s;
-}
-
-body {
-    //transition: background-color 0.5s, color 0.5s;
-}
-
-.container, .inventory, .character-area, .item, .slot, .button {
-    //transition: background-color 0.5s, border-color 0.5s, color 0.5s;
-}
-
-.code-block {
-	text-align:center;
-}
-
-.code-block .code-value {
-	font-size:11px;
-    font-weight: 700;
-}
-
-.code-block .code-name {
-	font-size:8px;
-}
-
-
-.inventory-type-head .item, .item.equipped.inventory-type-head {
-    background-color: #c6cbce;
-}
-
-.inventory-type-torso .item, .item.equipped.inventory-type-torso {
-    background-color: #e2d4e2;
-}
-
-.inventory-type-legs .item, .item.equipped.inventory-type-legs {
-    background-color: #e4efdd;
-}
-
-
-body.dark-mode .inventory-type-head .item, body.dark-mode .item.equipped.inventory-type-head {
-    background-color: #263238;
-}
-
-body.dark-mode .inventory-type-torso .item, body.dark-mode .item.equipped.inventory-type-torso {
-    background-color: #3b263c;
-}
-
-body.dark-mode .inventory-type-legs .item, body.dark-mode .item.equipped.inventory-type-legs {
-    background-color: #2e3b26;
-}
-
-</style>
+        :root {
+            --primary-color: #999;
+            --secondary-color: #f5f5f5;
+            --border-color: #ddd;
+            --dark-bg-primary: #343a40;
+            --dark-bg-secondary: #424E5B;
+            --dark-bg-border: #6c757d;
+            --dark-bg-border-light: #ccc;
+            --slot-size: 80px;
+            --item-size: 70px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            max-width: 1200px;
+            min-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+
+        .character-area {
+            width: 500px;
+            height: 600px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            position: relative;
+            background: linear-gradient(to bottom, #e6f3ff, #ffffff);
+            background-image: url('https://wl.atiks.org/wp-content/uploads/2024/11/bot_inventory.png');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+
+        .inventory {
+            width: 350px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            background-color: var(--secondary-color);
+            height: 600px;
+            overflow-y: auto;
+        }
+
+        .inventory::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .inventory::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .inventory::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 2px;
+        }
+
+        .inventory::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .category {
+            margin-bottom: 25px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .category-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .item {
+            width: var(--item-size);
+            height: var(--item-size);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            margin: 5px;
+            background-color: white;
+            cursor: move;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+
+        .slot {
+            width: var(--slot-size);
+            height: var(--slot-size);
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255,255,255,0.2);
+            transition: background-color 0.3s;
+        }
+
+        .equipped {
+            position: absolute;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .item:active {
+            transform: scale(0.95);
+        }
+
+        .slot.highlight {
+            background-color: rgba(255, 255, 255, 0.5);
+            border-color: var(--primary-color);
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .button {
+            padding: 8px 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #357abd;
+        }
+
+        .tooltip {
+            position: absolute;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            background-color: #333;
+            color: #fff;
+            padding: 5px;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+
+        body.dark-mode {
+            background-color: var(--dark-bg-primary);
+            color: #f5f5f5;
+        }
+
+        body.dark-mode .container {
+            background-color: var(--dark-bg-primary);
+        }
+
+        body.dark-mode .inventory, 
+        body.dark-mode .character-area {
+            background-color: var(--dark-bg-secondary);
+            border-color: var(--dark-bg-border);
+        }
+
+        body.dark-mode .item {
+            background-color: var(--dark-bg-secondary);
+            border: 2px solid var(--dark-bg-border);
+        }
+
+        body.dark-mode .slot {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255,255,255,0.2);
+        }
+
+        body.dark-mode .slot.highlight {
+            border-color: var(--dark-bg-border-light);
+        }
+
+        body.dark-mode .button {
+            background-color: var(--dark-bg-primary);
+        }
+
+        body.dark-mode .btn-close {
+            background-color: var(--dark-bg-border);
+        }
+
+        body.dark-mode .character-area {
+            background: linear-gradient(to bottom, #3e3e3e, #2e2e2e);
+            background-image: url('https://wl.atiks.org/wp-content/uploads/2024/11/bot_inventory.png');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+
+        body.dark-mode .category {
+            background-color: var(--dark-bg-secondary);
+        }
+
+        body.dark-mode .category-title {
+            border-bottom: 2px solid var(--dark-bg-border);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .modal-content input,
+        .modal-content select,
+        .modal-content textarea {
+            font-size:1.0rem;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        body.dark-mode .modal {
+            background-color: rgba(0,0,0,0.8);
+        }
+
+        body.dark-mode .modal-content {
+            background-color: var(--dark-bg-secondary);
+            color: #f5f5f5;
+        }
+
+        body.dark-mode .modal-content input,
+        body.dark-mode .modal-content select,
+        body.dark-mode .modal-content textarea {
+            background-color: var(--dark-bg-secondary);
+            color: #f5f5f5;
+            border: 1px solid var(--dark-bg-border);
+        }
+
+        body.dark-mode .modal-content input::placeholder,
+        body.dark-mode .modal-content textarea::placeholder {
+            color: #999;
+        }
+
+        body.dark-mode .modal-content label {
+            color: #f5f5f5;
+        }
+
+        body.dark-mode .modal-content .btn {
+            color: #fff;
+        }
+
+        body.dark-mode .modal-content .btn-close {
+            color: #ccc;
+        }
+
+        body.dark-mode .modal-header {
+            border-bottom: var(--bs-modal-header-border-width) solid var(--dark-bg-border);
+        }
+
+        body.dark-mode .modal-footer {
+            border-top: var(--bs-modal-footer-border-width) solid var(--dark-bg-border);
+        }
+
+        .item {
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+        }
+
+        .slot.highlight {
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .code-block {
+            text-align:center;
+        }
+
+        .code-block .code-value {
+            font-size:11px;
+            font-weight: 700;
+        }
+
+        .code-block .code-name {
+            font-size:8px;
+        }
+
+        .inventory-type-head .item, .item.equipped.inventory-type-head {
+            background-color: #c6cbce;
+        }
+
+        .inventory-type-torso .item, .item.equipped.inventory-type-torso {
+            background-color: #e2d4e2;
+        }
+
+        .inventory-type-legs .item, .item.equipped.inventory-type-legs {
+            background-color: #e4efdd;
+        }
+
+        body.dark-mode .inventory-type-head .item, body.dark-mode .item.equipped.inventory-type-head {
+            background-color: #263238;
+        }
+
+        body.dark-mode .inventory-type-torso .item, body.dark-mode .item.equipped.inventory-type-torso {
+            background-color: #3b263c;
+        }
+
+        body.dark-mode .inventory-type-legs .item, body.dark-mode .item.equipped.inventory-type-legs {
+            background-color: #2e3b26;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="character-area" id="character-area"></div>
-        
-        <div class="inventory" id="inventory">
-            <!-- Inventory categories will be dynamically populated -->
-        </div>
-        
+        <div class="inventory" id="inventory"></div>
         <div class="controls">
             <button class="button" id="toggle-theme-btn"><i class="fas fa-sun"></i></button>
-        <button class="button" id="reset-btn"><i class="fas fa-undo"></i></button>
+            <button class="button" id="reset-btn"><i class="fas fa-undo"></i></button>
         </div>
     </div>
-    
-<div class="modal fade" id="item-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel"></h5> <!-- Removed static text -->
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-            <div class="modal-body">
-                <input type="text" class="form-control mb-3" id="item-text" placeholder="Введите текст">
-                <select class="form-select mb-3" id="item-select">
-                    <option value="option1">Опция 1</option>
-                    <option value="option2">Опция 2</option>
-                </select>
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="item-checkbox">
-                    <label class="form-check-label" for="item-checkbox">Чекбокс</label>
+    <div class="modal fade" id="item-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <textarea class="form-control mb-3" id="item-textarea" placeholder="Введите текст"></textarea>
+                <div class="modal-body">
+                    <input type="text" class="form-control mb-3" id="item-text" placeholder="Введите текст">
+                    <select class="form-select mb-3" id="item-select">
+                        <option value="option1">Опция 1</option>
+                        <option value="option2">Опция 2</option>
+                    </select>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="item-checkbox">
+                        <label class="form-check-label" for="item-checkbox">Чекбокс</label>
+                    </div>
+                    <textarea class="form-control mb-3" id="item-textarea" placeholder="Введите текст"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary small" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary small" id="save-btn" data-bs-dismiss="modal">Сохранить</button>
+                    <button type="button" class="btn btn-danger small" id="delete-btn" data-bs-dismiss="modal">Удалить</button>
+                </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary small" data-bs-dismiss="modal">Закрыть</button>
-              <button type="button" class="btn btn-primary small" id="save-btn" data-bs-dismiss="modal">Сохранить</button>
-              <button type="button" class="btn btn-danger small" id="delete-btn" data-bs-dismiss="modal">Удалить</button>
-          </div>
         </div>
     </div>
-</div>
-
     <script>
-    
-const categoryTypeInfo = {
-    head: 'Мозг, обработка информации, и системными настройки.',
-    torso: 'Коммуникация, интеграции, и пользовательскими настройками.',
-    legs: 'Платежами, временные настройки, и данные.',
-}
+        const categoryTypeInfo = {
+            head: 'Мозг, обработка информации, и системными настройки.',
+            torso: 'Коммуникация, интеграции, и пользовательскими настройками.',
+            legs: 'Платежами, временные настройки, и данные.',
+        };
 
-const inventoryData = [
-  {
-    "category": "Голова",
-    "type": "head",
-    "items": [
-      {
-        "emoji": "🛠️",
-        "type": "head",
-        "value": "SYDB",
-        "name": "Режим отладки",
-        "tooltip": "Режим отладки",
-        "fieldType": "checkbox"
-      },
-      {
-        "emoji": "📊",
-        "type": "head",
-        "value": "SYLG",
-        "name": "Журнал сообщений",
-        "tooltip": "Журнал сообщений",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "⚖️",
-        "type": "head",
-        "value": "SYWT",
-        "name": "Вес",
-        "tooltip": "Вес",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🧮",
-        "type": "head",
-        "value": "SYGM",
-        "name": "Память графа",
-        "tooltip": "Память графа",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🔄",
-        "type": "head",
-        "value": "SYKT",
-        "name": "Сохранить поток",
-        "tooltip": "Сохранить поток",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🏷️",
-        "type": "head",
-        "value": "SYTG",
-        "name": "Теги",
-        "tooltip": "Теги",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🧠",
-        "type": "head",
-        "value": "AIMD",
-        "name": "LLM модель",
-        "tooltip": "LLM модель",
-        "fieldType": "select",
-        "preinstall": true
-      },
-      {
-        "emoji": "⚗️",
-        "type": "head",
-        "value": "AIFT",
-        "name": "Модель тонкой настройки",
-        "tooltip": "Модель тонкой настройки",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🌐",
-        "type": "head",
-        "value": "AIWB",
-        "name": "Интернет помощника",
-        "tooltip": "Интернет помощника",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🤖",
-        "type": "head",
-        "value": "AIAS",
-        "name": "Ассистенты",
-        "tooltip": "Ассистенты",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "👨‍⚖️",
-        "type": "head",
-        "value": "AIMP",
-        "name": "Промт модератора",
-        "tooltip": "Промт модератора",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "📂",
-        "type": "head",
-        "value": "AIAF",
-        "name": "Файлы помощника",
-        "tooltip": "Файлы помощника",
-        "fieldType": "text"
-      }
-    ]
-  },
-  {
-    "category": "Туловище",
-    "type": "torso",
-    "items": [
-      {
-        "emoji": "📡",
-        "type": "torso",
-        "value": "CMCH",
-        "name": "Канал",
-        "tooltip": "Канал",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🔐",
-        "type": "torso",
-        "value": "CMTK",
-        "name": "Токен бота",
-        "tooltip": "Токен бота",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🤖",
-        "type": "torso",
-        "value": "CMTN",
-        "name": "Имя бота",
-        "tooltip": "Имя бота",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "📑",
-        "type": "torso",
-        "value": "CMTM",
-        "name": "Меню бота",
-        "tooltip": "Меню бота",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "📬",
-        "type": "torso",
-        "value": "CMTS",
-        "name": "Подписка",
-        "tooltip": "Подписка",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🌍",
-        "type": "torso",
-        "value": "CMTL",
-        "name": "Локализация",
-        "tooltip": "Локализация",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🎧",
-        "type": "torso",
-        "value": "EXEL",
-        "name": "ElevenLabs",
-        "tooltip": "ElevenLabs",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🔌",
-        "type": "torso",
-        "value": "EXCZ",
-        "name": "Coze API",
-        "tooltip": "Coze API",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "⚡",
-        "type": "torso",
-        "value": "EXGQ",
-        "name": "Groq API",
-        "tooltip": "Groq API",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🔍",
-        "type": "torso",
-        "value": "EXDS",
-        "name": "DeepSeek API",
-        "tooltip": "DeepSeek API",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "📥",
-        "type": "torso",
-        "value": "EXWI",
-        "name": "WHAPI вход",
-        "tooltip": "WHAPI вход",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "📤",
-        "type": "torso",
-        "value": "EXWO",
-        "name": "WHAPI выход",
-        "tooltip": "WHAPI выход",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "✉️",
-        "type": "torso",
-        "value": "USTX",
-        "name": "Скрытое сообщение",
-        "tooltip": "Скрытое сообщение",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "💎",
-        "type": "torso",
-        "value": "USTL",
-        "name": "Лимит токенов",
-        "tooltip": "Лимит токенов",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "📝",
-        "type": "torso",
-        "value": "USML",
-        "name": "Лимит сообщений",
-        "tooltip": "Лимит сообщений",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "📅",
-        "type": "torso",
-        "value": "USDS",
-        "name": "Доля дней",
-        "tooltip": "Доля дней",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🎫",
-        "type": "torso",
-        "value": "USTS",
-        "name": "Доля токенов",
-        "tooltip": "Доля токенов",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "⚠️",
-        "type": "torso",
-        "value": "USPW",
-        "name": "Предупреждение периода",
-        "tooltip": "Предупреждение периода",
-        "fieldType": "text"
-      }
-    ]
-  },
-  {
-    "category": "Ноги",
-    "type": "legs",
-    "items": [
-      {
-        "emoji": "💳",
-        "type": "legs",
-        "value": "PAMD",
-        "name": "Режим платежей",
-        "tooltip": "Режим платежей",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "💰",
-        "type": "legs",
-        "value": "PARS",
-        "name": "Сумма платежа",
-        "tooltip": "Сумма платежа",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🏦",
-        "type": "legs",
-        "value": "PARB",
-        "name": "Робокасса",
-        "tooltip": "Робокасса",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "📆",
-        "type": "legs",
-        "value": "PARP",
-        "name": "Период платежа",
-        "tooltip": "Период платежа",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🛍️",
-        "type": "legs",
-        "value": "PATB",
-        "name": "Покупка токенов",
-        "tooltip": "Покупка токенов",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "💵",
-        "type": "legs",
-        "value": "PATC",
-        "name": "Стоимость токенов",
-        "tooltip": "Стоимость токенов",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "⏲️",
-        "type": "legs",
-        "value": "TMAD",
-        "name": "Задержка накопления",
-        "tooltip": "Задержка накопления",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "⚠️",
-        "type": "legs",
-        "value": "TMWW",
-        "name": "Предупреждение времени",
-        "tooltip": "Предупреждение времени",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🕒",
-        "type": "legs",
-        "value": "TMON",
-        "name": "Время включения",
-        "tooltip": "Время включения",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🕛",
-        "type": "legs",
-        "value": "TMOF",
-        "name": "Время выключения",
-        "tooltip": "Время выключения",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "⌛",
-        "type": "legs",
-        "value": "TMWT",
-        "name": "Таймаут ожидания",
-        "tooltip": "Таймаут ожидания",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🧩",
-        "type": "legs",
-        "value": "DTEB",
-        "name": "Блоки встраивания",
-        "tooltip": "Блоки встраивания",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "📄",
-        "type": "legs",
-        "value": "DTEP",
-        "name": "Простые встраивания",
-        "tooltip": "Простые встраивания",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "📋",
-        "type": "legs",
-        "value": "DTCL",
-        "name": "Список клиентов",
-        "tooltip": "Список клиентов",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "📦",
-        "type": "legs",
-        "value": "DTWB",
-        "name": "Товары WB",
-        "tooltip": "Товары WB",
-        "fieldType": "text"
-      },
-      {
-        "emoji": "🔖",
-        "type": "legs",
-        "value": "DTTN",
-        "name": "Имя тега",
-        "tooltip": "Имя тега",
-        "fieldType": "text"
-      }
-    ]
-  }
-];
+        const inventoryData = [
+            {
+                "category": "Голова",
+                "type": "head",
+                "items": [
+                    {
+                        "emoji": "🛠️",
+                        "type": "head",
+                        "value": "SYDB",
+                        "name": "Режим отладки",
+                        "tooltip": "Режим отладки",
+                        "fieldType": "checkbox"
+                    },
+                    {
+                        "emoji": "📊",
+                        "type": "head",
+                        "value": "SYLG",
+                        "name": "Журнал сообщений",
+                        "tooltip": "Журнал сообщений",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "⚖️",
+                        "type": "head",
+                        "value": "SYWT",
+                        "name": "Вес",
+                        "tooltip": "Вес",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🧮",
+                        "type": "head",
+                        "value": "SYGM",
+                        "name": "Память графа",
+                        "tooltip": "Память графа",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🔄",
+                        "type": "head",
+                        "value": "SYKT",
+                        "name": "Сохранить поток",
+                        "tooltip": "Сохранить поток",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🏷️",
+                        "type": "head",
+                        "value": "SYTG",
+                        "name": "Теги",
+                        "tooltip": "Теги",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🧠",
+                        "type": "head",
+                        "value": "AIMD",
+                        "name": "LLM модель",
+                        "tooltip": "LLM модель",
+                        "fieldType": "select",
+                        "preinstall": true
+                    },
+                    {
+                        "emoji": "⚗️",
+                        "type": "head",
+                        "value": "AIFT",
+                        "name": "Модель тонкой настройки",
+                        "tooltip": "Модель тонкой настройки",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🌐",
+                        "type": "head",
+                        "value": "AIWB",
+                        "name": "Интернет помощника",
+                        "tooltip": "Интернет помощника",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🤖",
+                        "type": "head",
+                        "value": "AIAS",
+                        "name": "Ассистенты",
+                        "tooltip": "Ассистенты",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "👨‍⚖️",
+                        "type": "head",
+                        "value": "AIMP",
+                        "name": "Промт модератора",
+                        "tooltip": "Промт модератора",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "📂",
+                        "type": "head",
+                        "value": "AIAF",
+                        "name": "Файлы помощника",
+                        "tooltip": "Файлы помощника",
+                        "fieldType": "text"
+                    }
+                ]
+            },
+            {
+                "category": "Туловище",
+                "type": "torso",
+                "items": [
+                    {
+                        "emoji": "📡",
+                        "type": "torso",
+                        "value": "CMCH",
+                        "name": "Канал",
+                        "tooltip": "Канал",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🔐",
+                        "type": "torso",
+                        "value": "CMTK",
+                        "name": "Токен бота",
+                        "tooltip": "Токен бота",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🤖",
+                        "type": "torso",
+                        "value": "CMTN",
+                        "name": "Имя бота",
+                        "tooltip": "Имя бота",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "📑",
+                        "type": "torso",
+                        "value": "CMTM",
+                        "name": "Меню бота",
+                        "tooltip": "Меню бота",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "📬",
+                        "type": "torso",
+                        "value": "CMTS",
+                        "name": "Подписка",
+                        "tooltip": "Подписка",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🌍",
+                        "type": "torso",
+                        "value": "CMTL",
+                        "name": "Локализация",
+                        "tooltip": "Локализация",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🎧",
+                        "type": "torso",
+                        "value": "EXEL",
+                        "name": "ElevenLabs",
+                        "tooltip": "ElevenLabs",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🔌",
+                        "type": "torso",
+                        "value": "EXCZ",
+                        "name": "Coze API",
+                        "tooltip": "Coze API",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "⚡",
+                        "type": "torso",
+                        "value": "EXGQ",
+                        "name": "Groq API",
+                        "tooltip": "Groq API",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🔍",
+                        "type": "torso",
+                        "value": "EXDS",
+                        "name": "DeepSeek API",
+                        "tooltip": "DeepSeek API",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "📥",
+                        "type": "torso",
+                        "value": "EXWI",
+                        "name": "WHAPI вход",
+                        "tooltip": "WHAPI вход",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "📤",
+                        "type": "torso",
+                        "value": "EXWO",
+                        "name": "WHAPI выход",
+                        "tooltip": "WHAPI выход",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "✉️",
+                        "type": "torso",
+                        "value": "USTX",
+                        "name": "Скрытое сообщение",
+                        "tooltip": "Скрытое сообщение",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "💎",
+                        "type": "torso",
+                        "value": "USTL",
+                        "name": "Лимит токенов",
+                        "tooltip": "Лимит токенов",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "📝",
+                        "type": "torso",
+                        "value": "USML",
+                        "name": "Лимит сообщений",
+                        "tooltip": "Лимит сообщений",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "📅",
+                        "type": "torso",
+                        "value": "USDS",
+                        "name": "Доля дней",
+                        "tooltip": "Доля дней",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🎫",
+                        "type": "torso",
+                        "value": "USTS",
+                        "name": "Доля токенов",
+                        "tooltip": "Доля токенов",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "⚠️",
+                        "type": "torso",
+                        "value": "USPW",
+                        "name": "Предупреждение периода",
+                        "tooltip": "Предупреждение периода",
+                        "fieldType": "text"
+                    }
+                ]
+            },
+            {
+                "category": "Ноги",
+                "type": "legs",
+                "items": [
+                    {
+                        "emoji": "💳",
+                        "type": "legs",
+                        "value": "PAMD",
+                        "name": "Режим платежей",
+                        "tooltip": "Режим платежей",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "💰",
+                        "type": "legs",
+                        "value": "PARS",
+                        "name": "Сумма платежа",
+                        "tooltip": "Сумма платежа",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🏦",
+                        "type": "legs",
+                        "value": "PARB",
+                        "name": "Робокасса",
+                        "tooltip": "Робокасса",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "📆",
+                        "type": "legs",
+                        "value": "PARP",
+                        "name": "Период платежа",
+                        "tooltip": "Период платежа",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🛍️",
+                        "type": "legs",
+                        "value": "PATB",
+                        "name": "Покупка токенов",
+                        "tooltip": "Покупка токенов",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "💵",
+                        "type": "legs",
+                        "value": "PATC",
+                        "name": "Стоимость токенов",
+                        "tooltip": "Стоимость токенов",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "⏲️",
+                        "type": "legs",
+                        "value": "TMAD",
+                        "name": "Задержка накопления",
+                        "tooltip": "Задержка накопления",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "⚠️",
+                        "type": "legs",
+                        "value": "TMWW",
+                        "name": "Предупреждение времени",
+                        "tooltip": "Предупреждение времени",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🕒",
+                        "type": "legs",
+                        "value": "TMON",
+                        "name": "Время включения",
+                        "tooltip": "Время включения",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🕛",
+                        "type": "legs",
+                        "value": "TMOF",
+                        "name": "Время выключения",
+                        "tooltip": "Время выключения",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "⌛",
+                        "type": "legs",
+                        "value": "TMWT",
+                        "name": "Таймаут ожидания",
+                        "tooltip": "Таймаут ожидания",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🧩",
+                        "type": "legs",
+                        "value": "DTEB",
+                        "name": "Блоки встраивания",
+                        "tooltip": "Блоки встраивания",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "📄",
+                        "type": "legs",
+                        "value": "DTEP",
+                        "name": "Простые встраивания",
+                        "tooltip": "Простые встраивания",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "📋",
+                        "type": "legs",
+                        "value": "DTCL",
+                        "name": "Список клиентов",
+                        "tooltip": "Список клиентов",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "📦",
+                        "type": "legs",
+                        "value": "DTWB",
+                        "name": "Товары WB",
+                        "tooltip": "Товары WB",
+                        "fieldType": "text"
+                    },
+                    {
+                        "emoji": "🔖",
+                        "type": "legs",
+                        "value": "DTTN",
+                        "name": "Имя тега",
+                        "tooltip": "Имя тега",
+                        "fieldType": "text"
+                    }
+                ]
+            }
+        ];
 
-// slot-config.js
-const slotConfig = [
-    { 
-        zone: 'head', 
-        positions: [
-            { id: 'head-1', top: '5%', left: '4%' },
-            { id: 'head-2', top: '5%', left: '25%' },
-            { id: 'head-3', top: '5%', left: '57%' },
-            { id: 'head-4', top: '5%', left: '78%' },
-        ]
-    },
-    { 
-        zone: 'torso', 
-        positions: [
-            { id: 'torso-1', top: '21%', left: '10%' },
-            { id: 'torso-2', top: '21%', left: '72%' },
-            { id: 'torso-3', top: '36%', left: '10%' },
-            { id: 'torso-4', top: '36%', left: '72%' },
-            { id: 'torso-5', top: '51%', left: '10%' },
-            { id: 'torso-6', top: '51%', left: '72%' },
-            { id: 'torso-7', top: '66%', left: '10%' },
-            { id: 'torso-8', top: '66%', left: '72%' },
-        ]
-    },
-    { 
-        zone: 'legs', 
-        positions: [
-            { id: 'legs-1', bottom: '5%', left: '4%' },
-            { id: 'legs-2', bottom: '5%', left: '25%' },
-            { id: 'legs-3', bottom: '5%', left: '57%' },
-            { id: 'legs-4', bottom: '5%', left: '78%' }
-        ]
-    }
-];
+        const slotConfig = [
+            { 
+                zone: 'head', 
+                positions: [
+                    { id: 'head-1', top: '5%', left: '4%' },
+                    { id: 'head-2', top: '5%', left: '25%' },
+                    { id: 'head-3', top: '5%', left: '57%' },
+                    { id: 'head-4', top: '5%', left: '78%' },
+                ]
+            },
+            { 
+                zone: 'torso', 
+                positions: [
+                    { id: 'torso-1', top: '21%', left: '10%' },
+                    { id: 'torso-2', top: '21%', left: '72%' },
+                    { id: 'torso-3', top: '36%', left: '10%' },
+                    { id: 'torso-4', top: '36%', left: '72%' },
+                    { id: 'torso-5', top: '51%', left: '10%' },
+                    { id: 'torso-6', top: '51%', left: '72%' },
+                    { id: 'torso-7', top: '66%', left: '10%' },
+                    { id: 'torso-8', top: '66%', left: '72%' },
+                ]
+            },
+            { 
+                zone: 'legs', 
+                positions: [
+                    { id: 'legs-1', bottom: '5%', left: '4%' },
+                    { id: 'legs-2', bottom: '5%', left: '25%' },
+                    { id: 'legs-3', bottom: '5%', left: '57%' },
+                    { id: 'legs-4', bottom: '5%', left: '78%' }
+                ]
+            }
+        ];
 
-class CharacterConstructor {
-    constructor() {
-        this.initializeDOM();
-        this.createTooltip();
-        this.generateSlots();
-        this.populateInventory();
-        this.initializeEventListeners();
-        this.preinstallItems();
-    }
+        class CharacterConstructor {
+            constructor() {
+                this.initializeDOM();
+                this.createTooltip();
+                this.generateSlots();
+                this.populateInventory();
+                this.initializeEventListeners();
+                this.preinstallItems();
+            }
 
-    initializeDOM() {
-        this.inventory = document.getElementById('inventory');
-        this.characterArea = document.getElementById('character-area');
-        this.toggleThemeBtn = document.getElementById('toggle-theme-btn');
-        this.resetBtn = document.getElementById('reset-btn');
-        this.equippedItems = new Map();
+            initializeDOM() {
+                this.inventory = document.getElementById('inventory');
+                this.characterArea = document.getElementById('character-area');
+                this.toggleThemeBtn = document.getElementById('toggle-theme-btn');
+                this.resetBtn = document.getElementById('reset-btn');
+                this.equippedItems = new Map();
+                document.body.classList.add('dark-mode');
+            }
 
-        // Включаем темную тему по умолчанию
-        document.body.classList.add('dark-mode');
-    }
+            createTooltip() {
+                this.tooltip = document.createElement('div');
+                this.tooltip.className = 'tooltip';
+                document.body.appendChild(this.tooltip);
+            }
 
-    createTooltip() {
-        this.tooltip = document.createElement('div');
-        this.tooltip.className = 'tooltip';
-        document.body.appendChild(this.tooltip);
-    }
+            populateInventory() {
+                inventoryData.forEach(category => {
+                    const categoryElement = document.createElement('div');
+                    categoryElement.className = `category inventory-type-${category.type}`;
 
-    populateInventory() {
-        inventoryData.forEach(category => {
-            const categoryElement = document.createElement('div');
-            //categoryElement.className = 'category';
-            categoryElement.className = `category inventory-type-${category.type}`;
+                    const titleElement = document.createElement('div');
+                    titleElement.className = 'category-title';
+                    titleElement.textContent = category.category;
+                    titleElement.draggable = false;
+                    titleElement.dataset.tooltip = categoryTypeInfo[category.type];
+                    categoryElement.appendChild(titleElement);
 
-            const titleElement = document.createElement('div');
-            titleElement.className = 'category-title';
-            titleElement.textContent = category.category;
-            titleElement.draggable = false;
-            titleElement.dataset.tooltip = categoryTypeInfo[category.type];
-            categoryElement.appendChild(titleElement);
+                    category.items.forEach(item => {
+                        const itemElement = document.createElement('div');
+                        itemElement.className = 'item';
+                        itemElement.draggable = !item.preinstall;
+                        itemElement.dataset.type = item.type;
+                        itemElement.dataset.tooltip = item.tooltip;
+                        itemElement.dataset.fieldType = item.fieldType;
+                        
+                        const codeBlock = document.createElement('div');
+                        codeBlock.className = 'code-block';
 
-            category.items.forEach(item => {
-                const itemElement = document.createElement('div');
-                itemElement.className = 'item';
-                itemElement.draggable = !item.preinstall;
-                itemElement.dataset.type = item.type;
-                itemElement.dataset.tooltip = item.tooltip;
-                itemElement.dataset.fieldType = item.fieldType;
+                        const codeEmoji = document.createElement('div');
+                        codeEmoji.className = 'code-emoji';
+                        codeEmoji.textContent = item.emoji;
+
+                        const codeValue = document.createElement('div');
+                        codeValue.className = 'code-value';
+                        codeValue.textContent = item.value;
+
+                        const codeName = document.createElement('div');
+                        codeName.className = 'code-name';
+                        codeName.textContent = item.name;
+
+                        codeBlock.appendChild(codeEmoji);
+                        codeBlock.appendChild(codeValue);
+                        codeBlock.appendChild(codeName);
+                        itemElement.appendChild(codeBlock);
+                        categoryElement.appendChild(itemElement);
+
+                        itemElement.addEventListener('dblclick', this.showItemModal.bind(this, itemElement));
+                    });
+
+                    this.inventory.appendChild(categoryElement);
+                });
+            }
+
+            generateSlots() {
+                this.slots = slotConfig.flatMap(config => 
+                    config.positions.map(pos => {
+                        const slot = document.createElement('div');
+                        slot.className = 'slot';
+                        slot.dataset.zone = config.zone;
+                        slot.dataset.id = pos.id;
+                        slot.style.top = pos.bottom ? '' : pos.top;
+                        slot.style.bottom = pos.bottom ? pos.bottom : '';
+                        slot.style.left = pos.left;
+                        this.characterArea.appendChild(slot);
+                        return slot;
+                    })
+                );
+            }
+
+            initializeEventListeners() {
+                this.inventory.addEventListener('dragstart', this.handleDragStart.bind(this));
+                this.characterArea.addEventListener('dragover', this.handleDragOver.bind(this));
+                this.characterArea.addEventListener('drop', this.handleDrop.bind(this));
+                this.inventory.addEventListener('dragend', this.handleDragEnd.bind(this));
                 
-                itemElement.style.backgroundColor = category.color;
+                this.toggleThemeBtn.addEventListener('click', this.toggleTheme.bind(this));
+                this.resetBtn.addEventListener('click', this.resetCharacter.bind(this));
+                this.deleteBtn = document.getElementById('delete-btn');
+                this.deleteBtn.addEventListener('click', () => {
+                    if (this.currentEquippedItem) {
+                        this.deleteItem(this.currentEquippedItem);
+                        this.currentEquippedItem = null;
+                    }
+                });
+                this.resetBtn.addEventListener('click', () => {
+                    if (confirm('Вы уверены, что хотите сбросить все блоки?')) {
+                        this.resetCharacter();
+                    }
+                });
+            }
+            
+            preinstallItems() {
+                inventoryData.forEach(category => {
+                    category.items.forEach(item => {
+                        if (item.preinstall) {
+                            const slot = this.slots.find(slot => slot.dataset.zone === item.type && !this.equippedItems.has(slot.dataset.id));
+                            if (slot) {
+                                this.equipItem(item, slot);
+                            }
+                        }
+                    });
+                });
+            }
+            
+            deleteItem(equippedItem) {
+                const slotId = equippedItem.slotId;
+                const equippedData = this.equippedItems.get(slotId);
+                if (equippedData) {
+                    equippedItem.remove();
+                    this.equippedItems.delete(slotId);
+                }
+            }
+
+            handleDragStart(e) {
+                const item = e.target.closest('.item');
+                if (item) {
+                    e.dataTransfer.setData('text/plain', JSON.stringify({
+                        type: item.dataset.type,
+                        emoji: item.querySelector('.code-emoji').textContent,
+                        value: item.querySelector('.code-value').textContent,
+                        name: item.querySelector('.code-name').textContent,
+                        tooltip: item.dataset.tooltip,
+                        fieldType: item.dataset.fieldType
+                    }));
+                    item.style.opacity = '0.5';
+                    this.highlightValidSlots(item.dataset.type);
+                }
+            }
+
+            handleDragEnd(e) {
+                const item = e.target.closest('.item');
+                if (item) {
+                    item.style.opacity = '1';
+                }
+            }
+
+            handleDragOver(e) {
+                e.preventDefault();
+                const slot = e.target.closest('.slot');
+                if (slot) slot.classList.add('highlight');
+            }
+
+            handleDrop(e) {
+                e.preventDefault();
+                const slot = e.target.closest('.slot');
+                if (!slot) return;
+
+                try {
+                    const itemData = JSON.parse(e.dataTransfer.getData('text/plain'));
+                    if (slot.dataset.zone === itemData.type) {
+                        this.equipItem(itemData, slot);
+                    }
+                } catch (err) {
+                    console.error('Drop error:', err);
+                }
+
+                this.highlightValidSlots(null);
+            }
+
+            equipItem(itemData, slot) {
+                if (this.equippedItems.has(slot.dataset.id)) {
+                    this.unequipItem(slot);
+                }
+
+                const newItem = this.createEquippedItem(itemData, slot);
+                newItem.slotId = slot.dataset.id;
+                newItem.dataset.fieldType = itemData.fieldType;
+                newItem.addEventListener('click', () => this.showItemModal(newItem));
+                this.equippedItems.set(slot.dataset.id, { newItem: newItem });
+            }
+            
+            createEquippedItem(itemData, slot) {
+                const newItem = document.createElement('div');
+                newItem.className = `item equipped inventory-type-${itemData.type}`;
+                newItem.draggable = !itemData.preinstall;
+                newItem.dataset.preinstall = itemData.preinstall !== undefined ? itemData.preinstall : false; 
+                newItem.dataset.type = itemData.type;
+                newItem.dataset.tooltip = itemData.tooltip;
+                newItem.dataset.fieldType = itemData.fieldType;
+                newItem.style.opacity = 1;
+
+                if (slot.style.top) {
+                    newItem.style.top = slot.style.top;
+                } else if (slot.style.bottom) {
+                    newItem.style.bottom = slot.style.bottom;
+                }
+                newItem.style.left = slot.style.left;
+                newItem.slot = slot;
                 
                 const codeBlock = document.createElement('div');
                 codeBlock.className = 'code-block';
 
                 const codeEmoji = document.createElement('div');
                 codeEmoji.className = 'code-emoji';
-                codeEmoji.textContent = item.emoji;
+                codeEmoji.textContent = itemData.emoji;
 
                 const codeValue = document.createElement('div');
                 codeValue.className = 'code-value';
-                codeValue.textContent = item.value;
+                codeValue.textContent = itemData.value;
 
                 const codeName = document.createElement('div');
                 codeName.className = 'code-name';
-                codeName.textContent = item.name;
+                codeName.textContent = itemData.name;
 
                 codeBlock.appendChild(codeEmoji);
                 codeBlock.appendChild(codeValue);
                 codeBlock.appendChild(codeName);
-                itemElement.appendChild(codeBlock);
-                categoryElement.appendChild(itemElement);
+                newItem.appendChild(codeBlock);
 
-                itemElement.addEventListener('dblclick', this.showItemModal.bind(this, itemElement));
-            });
-
-            this.inventory.appendChild(categoryElement);
-        });
-    }
-
-    generateSlots() {
-        this.slots = slotConfig.flatMap(config => 
-            config.positions.map(pos => {
-                const slot = document.createElement('div');
-                slot.className = 'slot';
-                slot.dataset.zone = config.zone;
-                slot.dataset.id = pos.id; // Use the unique ID
-                slot.style.top = pos.bottom ? '' : pos.top;
-                slot.style.bottom = pos.bottom ? pos.bottom : '';
-                slot.style.left = pos.left;
-                this.characterArea.appendChild(slot);
-                return slot;
-            })
-        );
-    }
-
-    initializeEventListeners() {
-        this.inventory.addEventListener('dragstart', this.handleDragStart.bind(this));
-        this.characterArea.addEventListener('dragover', this.handleDragOver.bind(this));
-        this.characterArea.addEventListener('drop', this.handleDrop.bind(this));
-        this.inventory.addEventListener('dragend', this.handleDragEnd.bind(this));
-        
-        this.toggleThemeBtn.addEventListener('click', this.toggleTheme.bind(this));
-        this.resetBtn.addEventListener('click', this.resetCharacter.bind(this));
-        this.deleteBtn = document.getElementById('delete-btn');
-        this.deleteBtn.addEventListener('click', () => {
-            if (this.currentEquippedItem) {
-                this.deleteItem(this.currentEquippedItem);
-                this.currentEquippedItem = null;
-            } else {
-                console.log('No current equipped item to delete');
+                this.characterArea.appendChild(newItem);
+                return newItem;
             }
-        });
-        this.resetBtn.addEventListener('click', () => {
-            if (confirm('Вы уверены, что хотите сбросить все блоки?')) {
-                this.resetCharacter();
+
+            findCategoryForItem(type) {
+                const categories = this.inventory.querySelectorAll('.category');
+                for (let category of categories) {
+                    const matchingItem = Array.from(category.querySelectorAll('.item'))
+                        .find(item => item.dataset.type === type);
+                    if (matchingItem) return category;
+                }
+                return this.inventory;
             }
-        });
-    }
-    
-    
-    preinstallItems() {
-      inventoryData.forEach(category => {
-        category.items.forEach(item => {
-          if (item.preinstall) {
-            const slot = this.slots.find(slot => slot.dataset.zone === item.type && !this.equippedItems.has(slot.dataset.id));
-            if (slot) {
-              this.equipItem(item, slot);
+            
+            generateTooltipContent(item) {
+                return `<div class="tooltip-title">${item.dataset.tooltip}</div>`;
             }
-          }
-        });
-      });
-    }
-    
-    
-    deleteItem(equippedItem) {
-        const slotId = equippedItem.slotId;
-        const equippedData = this.equippedItems.get(slotId);
-        if (equippedData) {
-            equippedItem.remove(); // Remove the equipped item from the character area
-            this.equippedItems.delete(slotId);
-        } else {
-            console.log('Equipped data not found for slot id:', slotId);
-        }
-    }
 
-
-    handleDragStart(e) {
-        const item = e.target.closest('.item');
-        if (item) {
-            e.dataTransfer.setData('text/plain', JSON.stringify({
-                type: item.dataset.type,
-                emoji: item.querySelector('.code-emoji').textContent,
-                value: item.querySelector('.code-value').textContent,
-                name: item.querySelector('.code-name').textContent,
-                tooltip: item.dataset.tooltip,
-                fieldType: item.dataset.fieldType // Добавляем тип поля
-            }));
-            item.style.opacity = '0.5'; // Добавляем эффект полупрозрачности
-            this.highlightValidSlots(item.dataset.type);
-        }
-    }
-
-    handleDragEnd(e) {
-        const item = e.target.closest('.item');
-        if (item) {
-            item.style.opacity = '1'; // Возвращаем полную непрозрачность
-        }
-    }
-
-    handleDragOver(e) {
-        e.preventDefault();
-        const slot = e.target.closest('.slot');
-        if (slot) slot.classList.add('highlight');
-    }
-
-    handleDrop(e) {
-        e.preventDefault();
-        const slot = e.target.closest('.slot');
-        if (!slot) return;
-
-        try {
-            const itemData = JSON.parse(e.dataTransfer.getData('text/plain'));
-            if (slot.dataset.zone === itemData.type) {
-                this.equipItem(itemData, slot);
+            hideTooltip() {
+                this.tooltip.style.opacity = '0';
             }
-        } catch (err) {
-            console.error('Drop error:', err);
-        }
 
-        this.highlightValidSlots(null);
-    }
-
-    equipItem(itemData, slot) {
-        if (this.equippedItems.has(slot.dataset.id)) {
-            this.unequipItem(slot);
-        }
-
-        const newItem = this.createEquippedItem(itemData, slot);
-        newItem.slotId = slot.dataset.id;
-        newItem.dataset.fieldType = itemData.fieldType;
-        newItem.addEventListener('click', () => this.showItemModal(newItem));
-        this.equippedItems.set(slot.dataset.id, { newItem: newItem });
-    }
-    
-    createEquippedItem(itemData, slot) {
-        const newItem = document.createElement('div');
-        newItem.className = `item equipped inventory-type-${itemData.type}`;
-        //newItem.className = 'item equipped';
-        newItem.draggable = !itemData.preinstall;
-        newItem.dataset.preinstall = itemData.preinstall !== undefined ? itemData.preinstall : false; 
-        newItem.dataset.type = itemData.type;
-        newItem.dataset.tooltip = itemData.tooltip;
-        newItem.dataset.fieldType = itemData.fieldType;
-        newItem.style.opacity = 1;
-
-        if (slot.style.top) {
-            newItem.style.top = slot.style.top;
-        } else if (slot.style.bottom) {
-            newItem.style.bottom = slot.style.bottom;
-        }
-        newItem.style.left = slot.style.left;
-        newItem.slot = slot;
-        
-        const category = inventoryData.find(cat => cat.type === itemData.type);
-        if (category && category.color) {
-            newItem.style.backgroundColor = category.color;
-        }
-
-        const codeBlock = document.createElement('div');
-        codeBlock.className = 'code-block';
-
-        const codeEmoji = document.createElement('div');
-        codeEmoji.className = 'code-emoji';
-        codeEmoji.textContent = itemData.emoji;
-
-        const codeValue = document.createElement('div');
-        codeValue.className = 'code-value';
-        codeValue.textContent = itemData.value;
-
-        const codeName = document.createElement('div');
-        codeName.className = 'code-name';
-        codeName.textContent = itemData.name;
-
-        // Append nested elements to codeBlock
-        codeBlock.appendChild(codeEmoji);
-        codeBlock.appendChild(codeValue);
-        codeBlock.appendChild(codeName);
-
-        // Append codeBlock to newItem
-        newItem.appendChild(codeBlock);
-
-        this.characterArea.appendChild(newItem);
-        console.log('Created equipped item:', newItem, 'in slot:', slot); // Отладочное сообщение
-        return newItem;
-    }
-
-    findCategoryForItem(type) {
-        const categories = this.inventory.querySelectorAll('.category');
-        for (let category of categories) {
-            const matchingItem = Array.from(category.querySelectorAll('.item'))
-                .find(item => item.dataset.type === type);
-            if (matchingItem) return category;
-        }
-        return this.inventory; // Fallback
-    }
-    
-
-    generateTooltipContent(item) {
-    	console.log(item.dataset.tooltip);
-        return `<div class="tooltip-title">${item.dataset.tooltip}</div>`;
-    }
-
-    hideTooltip() {
-        this.tooltip.style.opacity = '0';
-    }
-
-    highlightValidSlots(type) {
-        this.slots.forEach(slot => {
-            slot.classList.toggle('highlight', type ? slot.dataset.zone === type : false);
-        });
-    }
-
-    resetCharacter() {
-        this.equippedItems.forEach((itemData, slotId) => {
-            const item = itemData.newItem;
-            if (item.dataset.preinstall !== 'true') { // Check if preinstall is not true
-                item.remove();
+            highlightValidSlots(type) {
+                this.slots.forEach(slot => {
+                    slot.classList.toggle('highlight', type ? slot.dataset.zone === type : false);
+                });
             }
+
+            resetCharacter() {
+                this.equippedItems.forEach((itemData, slotId) => {
+                    const item = itemData.newItem;
+                    if (item.dataset.preinstall !== 'true') {
+                        item.remove();
+                    }
+                });
+                this.equippedItems.clear();
+                this.slots.forEach(slot => slot.classList.remove('highlight'));
+            }
+
+            toggleTheme() {
+                const body = document.body;
+                const toggleBtn = document.getElementById('toggle-theme-btn');
+                const isDarkMode = body.classList.toggle('dark-mode');
+                if (isDarkMode) {
+                    toggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            }
+
+            static initialize() {
+                return new CharacterConstructor();
+            }
+
+            showItemModal(equippedItem) {
+                this.hideTooltip();
+                const modal = new bootstrap.Modal(document.getElementById('item-modal'));
+                modal.show();
+                this.currentEquippedItem = equippedItem;
+
+                const modalTitle = document.getElementById('exampleModalLabel');
+                modalTitle.textContent = equippedItem.dataset.tooltip;
+
+                const modalBody = document.querySelector('.modal-body');
+                modalBody.innerHTML = '';
+
+                const fieldType = equippedItem.dataset.fieldType;
+                switch (fieldType) {
+                    case 'text':
+                        modalBody.innerHTML = `<input type="text" class="form-control mb-3" id="item-text" placeholder="Введите текст">`;
+                        break;
+                    case 'select':
+                        modalBody.innerHTML = `
+                            <select class="form-select mb-3" id="item-select">
+                                <option value="option1">Опция 1</option>
+                                <option value="option2">Опция 2</option>
+                            </select>`;
+                        break;
+                    case 'checkbox':
+                        modalBody.innerHTML = `
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="item-checkbox">
+                                <label class="form-check-label" for="item-checkbox">Чекбокс</label>
+                            </div>`;
+                        break;
+                    case 'textarea':
+                        modalBody.innerHTML = `<textarea class="form-control mb-3" id="item-textarea" placeholder="Введите текст"></textarea>`;
+                        break;
+                    default:
+                        modalBody.innerHTML = `<p>Неизвестный тип поля</p>`;
+                }
+
+                const deleteButton = document.getElementById('delete-btn');
+                if (equippedItem.dataset.preinstall === 'true') {
+                    deleteButton.style.display = 'none';
+                } else {
+                    deleteButton.style.display = 'inline-block';
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', CharacterConstructor.initialize);
+
+        document.getElementById('save-btn').addEventListener('click', () => {
+            const text = document.getElementById('item-text').value;
+            const select = document.getElementById('item-select').value;
+            const checkbox = document.getElementById('item-checkbox').checked;
+            const textarea = document.getElementById('item-textarea').value;
+
+            console.log('Text:', text);
+            console.log('Select:', select);
+            console.log('Checkbox:', checkbox);
+            console.log('Textarea:', textarea);
+
+            const modal = new bootstrap.Modal(document.getElementById('item-modal'));
+            modal.hide();
         });
-        this.equippedItems.clear();
-        this.slots.forEach(slot => slot.classList.remove('highlight'));
-    }
 
-    toggleTheme() {
-        const body = document.body;
-        const toggleBtn = document.getElementById('toggle-theme-btn');
-        const isDarkMode = body.classList.toggle('dark-mode');
-        if (isDarkMode) {
-          toggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
-        } else {
-          toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
-        }
-      }
+        class TooltipHandler {
+            constructor() {
+                this.tooltip = document.createElement('div');
+                this.tooltip.className = 'tooltip';
+                document.body.appendChild(this.tooltip);
 
-    static initialize() {
-        return new CharacterConstructor();
-    }
+                this.tooltip.style.position = 'absolute';
+                this.tooltip.style.display = 'none';
+                this.tooltip.style.opacity = '0';
+                this.tooltip.style.transition = 'opacity 0.3s';
+                this.tooltip.style.zIndex = '1000';
+                this.tooltip.style.backgroundColor = '#333';
+                this.tooltip.style.color = '#fff';
+                this.tooltip.style.padding = '5px';
+                this.tooltip.style.borderRadius = '3px';
+                this.tooltip.style.fontSize = '14px';
 
-   
-   showItemModal(equippedItem) {
-        this.hideTooltip();
-        const modal = new bootstrap.Modal(document.getElementById('item-modal'));
-        modal.show();
-        //this.resetModal();
-        this.currentEquippedItem = equippedItem;
+                document.addEventListener('mousemove', this.handleTooltip.bind(this));
+            }
 
-        // Set the modal title to the item's tooltip
-        const modalTitle = document.getElementById('exampleModalLabel');
-        modalTitle.textContent = equippedItem.dataset.tooltip;
+            handleTooltip(e) {
+                const item = e.target.closest('[data-tooltip]');
+                if (!item) {
+                    this.hideTooltip();
+                    return;
+                }
 
-        // Set the modal content based on the field type
-        const modalBody = document.querySelector('.modal-body');
-        modalBody.innerHTML = ''; // Clear previous content
+                this.tooltip.innerHTML = item.dataset.tooltip;
+                this.tooltip.style.display = 'block';
+                this.tooltip.style.opacity = '1';
 
-        const fieldType = equippedItem.dataset.fieldType;
-        switch (fieldType) {
-            case 'text':
-                modalBody.innerHTML = `<input type="text" class="form-control mb-3" id="item-text" placeholder="Введите текст">`;
-                break;
-            case 'select':
-                modalBody.innerHTML = `
-                    <select class="form-select mb-3" id="item-select">
-                        <option value="option1">Опция 1</option>
-                        <option value="option2">Опция 2</option>
-                    </select>`;
-                break;
-            case 'checkbox':
-                modalBody.innerHTML = `
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" id="item-checkbox">
-                        <label class="form-check-label" for="item-checkbox">Чекбокс</label>
-                    </div>`;
-                break;
-            case 'textarea':
-                modalBody.innerHTML = `<textarea class="form-control mb-3" id="item-textarea" placeholder="Введите текст"></textarea>`;
-                break;
-            default:
-                modalBody.innerHTML = `<p>Неизвестный тип поля</p>`;
+                const tooltipRect = this.tooltip.getBoundingClientRect();
+                let left = e.pageX + 10;
+                let top = e.pageY + 10;
+
+                if (left + tooltipRect.width > window.innerWidth) {
+                    left = window.innerWidth - tooltipRect.width - 10;
+                }
+                if (top + tooltipRect.height > window.innerHeight) {
+                    top = window.innerHeight - tooltipRect.height - 10;
+                }
+
+                this.tooltip.style.left = `${left}px`;
+                this.tooltip.style.top = `${top}px`;
+            }
+
+            hideTooltip() {
+                this.tooltip.style.display = 'none';
+                this.tooltip.style.opacity = '0';
+            }
         }
 
-        const deleteButton = document.getElementById('delete-btn');
-        if (equippedItem.dataset.preinstall === 'true') {
-            deleteButton.style.display = 'none';
-        } else {
-            deleteButton.style.display = 'inline-block';
-        }
-    }
-   
-    
-    generateTooltipContent(item) {
-        return `<div class="tooltip-title">${item.dataset.tooltip}</div>`;
-    }
-
-}
-
-// Initialize the Character Constructor when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', CharacterConstructor.initialize);
-
-document.getElementById('save-btn').addEventListener('click', () => {
-    const text = document.getElementById('item-text').value;
-    const select = document.getElementById('item-select').value;
-    const checkbox = document.getElementById('item-checkbox').checked;
-    const textarea = document.getElementById('item-textarea').value;
-
-    // Handle the data as needed
-    console.log('Text:', text);
-    console.log('Select:', select);
-    console.log('Checkbox:', checkbox);
-    console.log('Textarea:', textarea);
-
-    // Use Bootstrap's modal hide method
-    const modal = new bootstrap.Modal(document.getElementById('item-modal'));
-    modal.hide();
-});
-
-
-class TooltipHandler {
-    constructor() {
-        this.tooltip = document.createElement('div');
-        this.tooltip.className = 'tooltip';
-        document.body.appendChild(this.tooltip);
-
-        this.tooltip.style.position = 'absolute';
-        this.tooltip.style.display = 'none';
-        this.tooltip.style.opacity = '0';
-        this.tooltip.style.transition = 'opacity 0.3s';
-        this.tooltip.style.zIndex = '1000';
-        this.tooltip.style.backgroundColor = '#333';
-        this.tooltip.style.color = '#fff';
-        this.tooltip.style.padding = '5px';
-        this.tooltip.style.borderRadius = '3px';
-        this.tooltip.style.fontSize = '14px';
-
-        document.addEventListener('mousemove', this.handleTooltip.bind(this));
-    }
-
-    handleTooltip(e) {
-        const item = e.target.closest('[data-tooltip]');
-        if (!item) {
-            this.hideTooltip();
-            return;
-        }
-
-        this.tooltip.innerHTML = item.dataset.tooltip;
-        this.tooltip.style.display = 'block';
-        this.tooltip.style.opacity = '1';
-
-        const tooltipRect = this.tooltip.getBoundingClientRect();
-        let left = e.pageX + 10;
-        let top = e.pageY + 10;
-
-        if (left + tooltipRect.width > window.innerWidth) {
-            left = window.innerWidth - tooltipRect.width - 10;
-        }
-        if (top + tooltipRect.height > window.innerHeight) {
-            top = window.innerHeight - tooltipRect.height - 10;
-        }
-
-        this.tooltip.style.left = `${left}px`;
-        this.tooltip.style.top = `${top}px`;
-    }
-
-    hideTooltip() {
-        this.tooltip.style.display = 'none';
-        this.tooltip.style.opacity = '0';
-    }
-}
-
-new TooltipHandler();
-
-</script>
+        new TooltipHandler();
+    </script>
 </body>
 </html>
