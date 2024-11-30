@@ -420,6 +420,11 @@
     </div>
   </div>
     <script>
+    
+    
+    	const INITIAL_INVENTORY_STRING = "AIMD|CMCH|SYWT|WBLU|WBPU";
+        const initialInventoryItems = INITIAL_INVENTORY_STRING.split('|');
+    
         const categoryTypeInfo = {
             head: 'Мозг, обработка информации, и системными настройки.',
             torso: 'Коммуникация, интеграции, и пользовательскими настройками.',
@@ -858,6 +863,7 @@
                 this.populateInventory();
                 this.initializeEventListeners();
                 this.preinstallItems();
+                this.populateInitialInventory();
             }
 
             initializeDOM() {
@@ -921,6 +927,30 @@
 
                     this.inventory.appendChild(categoryElement);
                 });
+                
+            }
+            
+            
+            populateInitialInventory() {
+              initialInventoryItems.forEach(itemValue => {
+                const item = inventoryData.flatMap(category => category.items).find(item => item.value === itemValue);
+                if (item) {
+                  const slot = this.slots.find(slot => slot.dataset.zone === item.type && !this.equippedItems.has(slot.dataset.id));
+                  if (slot && !this.isItemEquipped(itemValue)) {
+                    this.equipItem(item, slot);
+                  }
+                }
+              });
+            }
+            
+            
+            isItemEquipped(itemValue) {
+                for (const [slotId, itemData] of this.equippedItems) {
+                    if (itemData.newItem.querySelector('.code-value').textContent === itemValue) {
+                        return true;
+                    }
+                }
+                return false;
             }
 
             generateSlots() {
