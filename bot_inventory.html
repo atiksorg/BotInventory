@@ -329,6 +329,22 @@ body.dark-mode .modal-footer {
     border-top: var(--bs-modal-footer-border-width) solid var(--dark-bg-border);
 }
 
+.item {
+    transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.slot.highlight {
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+body {
+    transition: background-color 0.5s, color 0.5s;
+}
+
+.container, .inventory, .character-area, .item, .slot, .button {
+    transition: background-color 0.5s, border-color 0.5s, color 0.5s;
+}
+
 
 </style>
 </head>
@@ -521,6 +537,7 @@ class CharacterConstructor {
         this.inventory.addEventListener('dragstart', this.handleDragStart.bind(this));
         this.characterArea.addEventListener('dragover', this.handleDragOver.bind(this));
         this.characterArea.addEventListener('drop', this.handleDrop.bind(this));
+        this.inventory.addEventListener('dragend', this.handleDragEnd.bind(this));
         
         this.toggleThemeBtn.addEventListener('click', this.toggleTheme.bind(this));
         this.resetBtn.addEventListener('click', this.resetCharacter.bind(this));
@@ -561,7 +578,15 @@ class CharacterConstructor {
                 emoji: item.textContent,
                 tooltip: item.dataset.tooltip
             }));
+            item.style.opacity = '0.5'; // Добавляем эффект полупрозрачности
             this.highlightValidSlots(item.dataset.type);
+        }
+    }
+
+    handleDragEnd(e) {
+        const item = e.target.closest('.item');
+        if (item) {
+            item.style.opacity = '1'; // Возвращаем полную непрозрачность
         }
     }
 
