@@ -1049,6 +1049,13 @@
 
                 try {
                     const itemData = JSON.parse(e.dataTransfer.getData('text/plain'));
+                    const itemValue = itemData.value;
+
+                    if (this.isItemEquipped(itemValue)) {
+                        console.log('Item is already equipped:', itemValue);
+                        return;
+                    }
+
                     if (slot.dataset.zone === itemData.type) {
                         this.equipItem(itemData, slot);
                     }
@@ -1058,7 +1065,7 @@
 
                 this.highlightValidSlots(null);
             }
-
+          
             equipItem(itemData, slot) {
                 if (this.equippedItems.has(slot.dataset.id)) {
                     this.unequipItem(slot);
